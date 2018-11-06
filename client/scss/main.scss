@@ -1,0 +1,45 @@
+$appWidth: 200px;
+$italicColor: slategrey;
+
+@function calcDivMargin($width) {
+  @return $width / 4;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#app {
+  width: 50%;
+  margin: 0 auto;
+  text-align: center;
+  
+  div {
+    margin-top: calcDivMargin($appWidth);
+  }
+  
+  div h1 {
+    color: $italicColor;
+  }
+  
+  div ul {
+    width: $appWidth;
+    margin: 0 auto;
+    text-align: left;   
+
+    li {
+      margin-top: 10px;
+      word-break: break-all;
+      font-size: 1.1em;
+    } 
+  }
+ 
+  div h2 {
+    i {
+      color: $italicColor;
+    }
+  }
+}
