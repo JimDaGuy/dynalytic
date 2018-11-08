@@ -39,7 +39,7 @@ gulp.task('lint', () => {
 
 gulp.task('watch', () => {
   gulp.watch('./client/scss/*.scss', ['sass']);
-  gulp.watch(['./client/*.js'], ['js']);
+  gulp.watch(['./client/*.js', './client/**/*.js'], ['js']);
 
   nodemon({
     script: './server/app.js'

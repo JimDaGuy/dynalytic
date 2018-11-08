@@ -1,121 +1,134 @@
-const handleDomo = (e) => {
-  e.preventDefault();
-
-  $("#domoMessage").animate({ width: 'hide' }, 350);
-
-  if ($("#domoName").val() == '' || $("#domoAge").val() == '') {
-    handleError("RAWR! All fields are required");
-    return false;
+// Main app page
+// Page for main application
+class Header extends React.Component {
+  constructor(props) {
+    super(props);
   }
 
-  sendAjax('POST', $("#domoForm").attr("action"), $("#domoForm").serialize(), () => {
-    loadDomosFromServer();
-  });
+  render() {
+    const handleLogoutClick = this.props.handleLogoutClick;
 
-  return false;
-};
-
-const DomoForm = (props) => {
-  return (
-    <form id="domoForm"
-      onSubmit={handleDomo}
-      name="domoForm"
-      action="/maker"
-      method="POST"
-      className="domoForm"
-    >
-      <label htmlFor="name">Name: </label>
-      <input id="domoName" type="text" name="name" placeholder="Domo Name" />
-      <label htmlFor="food">Food: </label>
-      <input id="domoFood" type="text" name="food" placeholder="Domo's Favorite Food" />
-      <br></br>
-      <br></br>
-      <label htmlFor="age">Age: </label>
-      <input id="domoAge" type="text" name="age" placeholder="Domo Age" />
-      <input type="hidden" name="_csrf" value={props.csrf} />
-      <input className="makeDomoSubmit" type="submit" value="Make Domo" />
-    </form>
-  );
-};
-
-const DomoList = (props) => {
-  if (props.domos.length === 0) {
     return (
-      <div className="domoList">
-        <h3 className="emptyDomo">No Domos yet</h3>
+      <div id="header">
+        <a href="/app" className="headerProjectName">dynalytic</a>
+        <a href="/logout" className="logoutLink">Logout</a>
       </div>
     );
   }
+}
 
-  const domoNodes = props.domos.map((domo) => {
-    const removeDomoFormId = `removeDomoForm_${domo._id}`;
+class Content extends React.Component {
+  constructor(props) {
+    super(props);
 
-    const handleRemoveDomo = (e) => {
-      e.preventDefault();
-    
-      $("#domoMessage").animate({ width: 'hide' }, 350);
-    
-      console.dir($(removeDomoFormId));
-
-      sendAjax('POST', $(`#${removeDomoFormId}`).attr("action"), $(`#${removeDomoFormId}`).serialize(), () => {
-        loadDomosFromServer();
-      });
-    
-      return false;
+    this.state = {
+      selectedPage: "home"
     };
 
+    this.selectPage = this.selectPage.bind(this);
+  }
+
+  selectPage(pageName) {
+    this.setState({ selectedPage: pageName });
+  }
+
+  render() {
+    let page;
+
+    switch (this.state.selectedPage) {
+      case "home":
+        page =
+          <div id="homePage" className="selectedDashboardPage" >
+            <h1>Hiya!</h1>
+          </div>;
+        break;
+      case "addData":
+        page =
+          <div id="addDataPage" className="selectedDashboardPage" >
+            <h1>Add some data</h1>
+          </div>;
+        break;
+      case "myData":
+        page =
+          <div id="myDataPage" className="selectedDashboardPage" >
+            <h1>Here's your data</h1>
+          </div>;
+        break;
+      case "analytics":
+        page =
+          <div id="analyticsPage" className="selectedDashboardPage" >
+            <h1>Analytics here!</h1>
+          </div>;
+        break;
+      default:
+        break;
+    }
+
     return (
-      <div key={domo._id} className="domo">
-        <img src="/assets/img/domoface.jpeg" alt="domo face" className="domoFace" />
-        <h3 className="domoName"> Name: {domo.name}</h3>
-        <h3 className="domoFood"> Favorite Food: {domo.food}</h3>
-        <h3 className="domoAge"> Age: {domo.age}</h3>
-        <form id={removeDomoFormId}
-          onSubmit={handleRemoveDomo}
-          name={removeDomoFormId}
-          action="/removeDomo"
-          method="POST"
-          className="removeDomoForm"
-        >
-          <input type="hidden" name="id" value={domo._id} />
-          <input type="hidden" name="_csrf" value={props.csrf} />
-          <input className="removeDomoSubmit" type="submit" value="Remove Domo" />
-        </form>
+      <div id="content">
+        <div id="dashboard">
+          <div id="sidebar">
+            <div
+              className={`sidebarItem ${this.state.selectedPage === 'home' ? 'selectedSidebarItem' : ''}`}
+              onClick={() => this.selectPage('home')}
+            >
+              <span className="sidebarSpan">Home</span>
+            </div>
+            <div
+              className={`sidebarItem ${this.state.selectedPage === 'addData' ? 'selectedSidebarItem' : ''}`}
+              onClick={() => this.selectPage('addData')}
+            >
+              <span className="sidebarSpan">Add Datasets</span>
+            </div>
+            <div
+              className={`sidebarItem ${this.state.selectedPage === 'myData' ? 'selectedSidebarItem' : ''}`}
+              onClick={() => this.selectPage('myData')}
+            >
+              <span className="sidebarSpan">My Datasets</span>
+            </div>
+            <div
+              className={`sidebarItem ${this.state.selectedPage === 'analytics' ? 'selectedSidebarItem' : ''}`}
+              onClick={() => this.selectPage('analytics')}
+            >
+              <span className="sidebarSpan">Analytics</span>
+            </div>
+          </div>
+          <div id="dashboardPage">
+            {page}
+          </div>
+        </div>
       </div>
     );
-  });
+  }
+}
 
-  return (
-    <div className="domoList">
-      {domoNodes}
-    </div>
-  );
-};
+class Page extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
 
-const loadDomosFromServer = () => {
-  sendAjax('GET', '/getToken', null, (result) => {
-    sendAjax('GET', '/getDomos', null, (data) => {
-      ReactDOM.render(
-        <DomoList domos={data.domos} csrf={result.csrfToken} />, document.querySelector("#domos")
-      );
-    });
-  });
-};
+    };
 
-const setup = (csrf) => {
+  }
+
+  render() {
+
+    return (
+      <div id="page">
+        <Header handleLogoutClick={this.handleLogoutClick} />
+        <Content />
+      </div>
+    );
+  };
+}
+
+const renderPage = (csrf) => {
   ReactDOM.render(
-    <DomoForm csrf={csrf} />, document.querySelector("#app")
+    <Page />,
+    document.querySelector("#app")
   );
-
-  loadDomosFromServer();
-};
-
-const getToken = (callback) => {
-  sendAjax('GET', '/getToken', null, (result) => {
-    setup(result.csrfToken);
-  });
 };
 
 $(document).ready(() => {
-  getToken();
+  renderPage();
 });
