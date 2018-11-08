@@ -18,7 +18,7 @@ gulp.task('js', () => {
     .pipe(babel({
       presets: ['env', 'react']
     }))
-    .pipe(gulp.dest('./hosted/'))
+    .pipe(gulp.dest('./hosted/'));
 
   // App Bundle
   gulp.src(['./client/app/*.js', './client/helper/*.js'])
@@ -26,7 +26,8 @@ gulp.task('js', () => {
     .pipe(babel({
       presets: ['env', 'react']
     }))
-    .pipe(gulp.dest('./hosted/'))
+    .pipe(gulp.dest('./hosted/'));
+
 });
 
 gulp.task('lint', () => {
@@ -38,7 +39,7 @@ gulp.task('lint', () => {
 
 gulp.task('watch', () => {
   gulp.watch('./client/scss/*.scss', ['sass']);
-  gulp.watch(['./client/**/*.js', '.client/*.js'], ['js']);
+  gulp.watch(['./client/*.js'], ['js']);
 
   nodemon({
     script: './server/app.js'

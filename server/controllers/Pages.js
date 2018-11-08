@@ -1,13 +1,5 @@
 const defaultPage = (req, res) => {
-  res.render('app', { csrfToken: req.csrfToken() });
-};
-
-const loginPage = (req, res) => {
-  res.render('app', { csrfToken: req.csrfToken() });
-};
-
-const signupPage = (req, res) => {
-  res.render('app', { csrfToken: req.csrfToken() });
+  res.render('main', { csrfToken: req.csrfToken() });
 };
 
 const appPage = (req, res) => {
@@ -16,7 +8,5 @@ const appPage = (req, res) => {
 
 module.exports = {
   defaultPage,
-  loginPage,
-  signupPage,
   appPage,
 };

@@ -12,34 +12,118 @@ html, body {
   padding: 0;
 }
 
-#app {
-  width: 50%;
-  margin: 0 auto;
-  text-align: center;
-  
-  div {
-    margin-top: calcDivMargin($appWidth);
-  }
-  
-  div h1 {
-    color: $italicColor;
-  }
-  
-  div ul {
-    width: $appWidth;
-    margin: 0 auto;
-    text-align: left;   
+#page {
+  margin: 0;
+  padding: 0;
+}
 
-    li {
-      margin-top: 10px;
-      word-break: break-all;
-      font-size: 1.1em;
-    } 
+#header {
+  background-color: black;
+  height: 24px;
+  width: 100%;
+  position: fixed;
+  padding: 3px 0;
+
+  .headerProjectName {
+    color: white;
+    text-decoration: none;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    line-height: 24px;
+    margin: 0 15px;
   }
- 
-  div h2 {
-    i {
-      color: $italicColor;
-    }
+
+  .openAppLink {
+    color: white;
+    text-decoration: none;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    float: right;
+    line-height: 24px;
+    margin: 0 15px;
   }
+
+  .signInLink {
+    color: white;
+    background-color: mediumslateblue;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    float: right;
+    height: 24px;
+    margin: 0 15px;
+  }
+
+  .signUpLink {
+    color: white;
+    background-color: mediumslateblue;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    float: right;
+    height: 24px;
+    margin: 0 15px;
+  }
+}
+
+#content {
+  background-color: mediumpurple;
+  height: calc(100% - 35px);
+  padding-top: 35px;
+
+  .appName {
+    font-size: 3em;
+    margin: 5% 0 0 0;
+    text-align: center;
+    color: white;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  }
+
+  .appTagline {
+    font-size: 2.25em;
+    margin: 5px 0;
+    text-align: center;
+    color: white;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  }
+
+  .appDescription {
+    font-size: 1.5em;
+    width: 50%;
+    margin: 15px auto;
+    clear: both;
+  }
+}
+
+#formOverlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+  background-color: rgba(116, 116, 116, .6);
+
+  label {
+    font-size: 1.5em;
+    margin: 10px auto;
+    clear: both;
+    display: block;
+    text-align: center;
+  }
+
+  input {
+    margin: 10px auto;
+    clear: both;
+    display: block;
+  }
+}
+
+#loginForm {
+  padding: 20px;
+  max-width: 30%;
+  margin: 20% auto;
+  background-color: lightgreen;
+}
+
+#signupForm {
+  padding: 20px;
+  max-width: 30%;
+  margin: 20% auto;
+  background-color: lightgreen;
 }

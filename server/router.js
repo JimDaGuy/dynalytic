@@ -3,10 +3,8 @@ const mid = require('./middleware');
 
 const router = (app) => {
   // Pages
-  app.get('/', mid.requiresLogout, controllers.Pages.defaultPage);
+  app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Pages.defaultPage);
   app.get('/app', mid.requiresLogin, controllers.Pages.appPage);
-  app.get('/login', mid.requiresSecure, mid.requiresLogout, controllers.Pages.loginPage);
-  app.get('/signup', mid.requiresSecure, mid.requiresLogout, controllers.Pages.signupPage);
   app.get('/logout', mid.requiresLogin, controllers.Account.logout);
 
   // Posts
