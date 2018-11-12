@@ -66,10 +66,52 @@ var Content = function (_React$Component2) {
       this.setState({ selectedPage: pageName });
     }
   }, {
+    key: "submitCSV",
+    value: function submitCSV(csrf) {
+      var csvFile = $('#csvUpload')[0].files[0];
+      var datasetName = $('#datasetName')[0].value;
+
+      if (!csvFile) {
+        console.dir('No file selected');
+        // Throw clientside error 'No file selected'
+        return;
+      }
+
+      var reader = new FileReader();
+      reader.readAsText(csvFile);
+      reader.onload = function (e) {
+        var csv = e.target.result;
+        var data = $.csv.toObjects(csv);
+        console.dir(data);
+
+        //Disable submit button while submitting
+        $('#csvButton').attr('disabled', 'disabled');
+
+        // Send array of csv objects to the server
+        $.ajax({
+          type: "POST",
+          url: '/upload',
+          data: {
+            _csrf: csrf,
+            csvData: data,
+            datasetName: datasetName
+          },
+          success: function success() {
+            $('#csvButton').removeAttr('disabled');
+            // Update screen to reflect upload status
+          }
+        }).error(function () {
+          $('#csvButton').removeAttr('disabled');
+          // Update screen to reflect upload status
+        });
+      };
+    }
+  }, {
     key: "render",
     value: function render() {
       var _this3 = this;
 
+      var csrf = this.props.csrf;
       var page = void 0;
 
       switch (this.state.selectedPage) {
@@ -92,6 +134,15 @@ var Content = function (_React$Component2) {
               "h1",
               null,
               "Add some data"
+            ),
+            React.createElement("input", { id: "csvUpload", type: "file", accept: ".csv" }),
+            React.createElement("input", { id: "datasetName", type: "text", placeholder: "Dataset name" }),
+            React.createElement(
+              "button",
+              { id: "csvButton", type: "button", onClick: function onClick() {
+                  return _this3.submitCSV(csrf);
+                } },
+              "Upload CSV"
             )
           );
           break;
@@ -216,12 +267,13 @@ var Page = function (_React$Component3) {
   _createClass(Page, [{
     key: "render",
     value: function render() {
+      var csrf = this.props.csrf;
 
       return React.createElement(
         "div",
         { id: "page" },
         React.createElement(Header, { handleLogoutClick: this.handleLogoutClick }),
-        React.createElement(Content, null)
+        React.createElement(Content, { csrf: csrf })
       );
     }
   }]);
@@ -229,12 +281,48 @@ var Page = function (_React$Component3) {
   return Page;
 }(React.Component);
 
+var getToken = function getToken() {
+  sendAjax('GET', '/getToken', null, function (result) {
+    renderPage(result.csrfToken);
+  });
+};
+
 var renderPage = function renderPage(csrf) {
-  ReactDOM.render(React.createElement(Page, null), document.querySelector("#app"));
+  ReactDOM.render(React.createElement(Page, { csrf: csrf }), document.querySelector("#app"));
+};
+
+var submitCSV = function submitCSV() {
+  console.dir('Pressed it');
+
+  var csvFile = $('#csvFile')[0].files[0];
+
+  if (!csvFile) {
+    console.dir('No file selected');
+    // Throw clientside error 'No file selected'
+    return;
+  }
+
+  //Disable submit button while submitting
+  $('#csvButton').attr('disabled', 'disabled');
+
+  //Parse CSV 
+  var csvJSON = parseCSVToJSON(csvFile);
+
+  //Send JSON to server
+  var xhr = new XMLHttpRequest();
+  xhr.onload = function () {
+    $('#csvButton').removeAttr('disabled');
+    // Update screen to reflect upload status
+    console.dir('Ayy lmao');
+  };
+
+  xhr.open('POST', '/upload');
+  xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+  xhr.send(JSON.stringify(csvJSON));
 };
 
 $(document).ready(function () {
-  renderPage();
+  getToken();
 });
 
 var handleError = function handleError(message) {

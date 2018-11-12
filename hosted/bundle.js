@@ -78,7 +78,7 @@ var Content = function (_React$Component2) {
         React.createElement(
           "div",
           { className: "appDescription" },
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+          "Dynalytic allows users to upload their datasets and quickly create helpful visualizations to better understand them. Simply upload a csv file, provide extra information as neccesary, and manipulate the data into useful representations in minutes. Dynalytic has the tools for you to add, remove, and modify datasets to make the data work for you. Create an account to get started!"
         )
       );
     }
@@ -360,7 +360,6 @@ var getToken = function getToken() {
 };
 
 $(document).ready(function () {
-  renderPage();
   getToken();
 });
 
