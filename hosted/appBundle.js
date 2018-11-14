@@ -2,6 +2,8 @@
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -53,18 +55,64 @@ var Content = function (_React$Component2) {
     var _this2 = _possibleConstructorReturn(this, (Content.__proto__ || Object.getPrototypeOf(Content)).call(this, props));
 
     _this2.state = {
-      selectedPage: "home"
+      selectedPage: "home",
+      userDatasets: []
     };
 
     _this2.selectPage = _this2.selectPage.bind(_this2);
+    _this2.getUserDatasets = _this2.getUserDatasets.bind(_this2);
     return _this2;
   }
 
   _createClass(Content, [{
     key: "selectPage",
     value: function selectPage(pageName) {
+      var _this3 = this;
+
       this.setState({ selectedPage: pageName });
+      if (pageName === "myData") {
+        this.getUserDatasets().then(function (response) {
+          return _this3.setState({
+            userDatasets: response.datasets
+          });
+        }).catch(function (err) {
+          console.dir(err);
+        });
+      }
     }
+  }, {
+    key: "getUserDatasets",
+    value: function () {
+      var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+        var result;
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _context.next = 2;
+                return $.ajax({
+                  type: "GET",
+                  url: '/getDatasetList'
+                });
+
+              case 2:
+                result = _context.sent;
+                return _context.abrupt("return", JSON.parse(result));
+
+              case 4:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
+      }));
+
+      function getUserDatasets() {
+        return _ref.apply(this, arguments);
+      }
+
+      return getUserDatasets;
+    }()
   }, {
     key: "submitCSV",
     value: function submitCSV(csrf) {
@@ -82,7 +130,6 @@ var Content = function (_React$Component2) {
       reader.onload = function (e) {
         var csv = e.target.result;
         var data = $.csv.toObjects(csv);
-        console.dir(data);
 
         //Disable submit button while submitting
         $('#csvButton').attr('disabled', 'disabled');
@@ -109,7 +156,7 @@ var Content = function (_React$Component2) {
   }, {
     key: "render",
     value: function render() {
-      var _this3 = this;
+      var _this4 = this;
 
       var csrf = this.props.csrf;
       var page = void 0;
@@ -122,7 +169,7 @@ var Content = function (_React$Component2) {
             React.createElement(
               "h1",
               null,
-              "Hiya!"
+              "Hi, hello, welcome."
             )
           );
           break;
@@ -140,13 +187,14 @@ var Content = function (_React$Component2) {
             React.createElement(
               "button",
               { id: "csvButton", type: "button", onClick: function onClick() {
-                  return _this3.submitCSV(csrf);
+                  return _this4.submitCSV(csrf);
                 } },
               "Upload CSV"
             )
           );
           break;
         case "myData":
+          // Get user datasets whenever the page loads
           page = React.createElement(
             "div",
             { id: "myDataPage", className: "selectedDashboardPage" },
@@ -154,7 +202,8 @@ var Content = function (_React$Component2) {
               "h1",
               null,
               "Here's your data"
-            )
+            ),
+            React.createElement(DatasetList, { userDatasets: this.state.userDatasets })
           );
           break;
         case "analytics":
@@ -186,7 +235,7 @@ var Content = function (_React$Component2) {
               {
                 className: "sidebarItem " + (this.state.selectedPage === 'home' ? 'selectedSidebarItem' : ''),
                 onClick: function onClick() {
-                  return _this3.selectPage('home');
+                  return _this4.selectPage('home');
                 }
               },
               React.createElement(
@@ -200,7 +249,7 @@ var Content = function (_React$Component2) {
               {
                 className: "sidebarItem " + (this.state.selectedPage === 'addData' ? 'selectedSidebarItem' : ''),
                 onClick: function onClick() {
-                  return _this3.selectPage('addData');
+                  return _this4.selectPage('addData');
                 }
               },
               React.createElement(
@@ -214,7 +263,7 @@ var Content = function (_React$Component2) {
               {
                 className: "sidebarItem " + (this.state.selectedPage === 'myData' ? 'selectedSidebarItem' : ''),
                 onClick: function onClick() {
-                  return _this3.selectPage('myData');
+                  return _this4.selectPage('myData');
                 }
               },
               React.createElement(
@@ -228,7 +277,7 @@ var Content = function (_React$Component2) {
               {
                 className: "sidebarItem " + (this.state.selectedPage === 'analytics' ? 'selectedSidebarItem' : ''),
                 onClick: function onClick() {
-                  return _this3.selectPage('analytics');
+                  return _this4.selectPage('analytics');
                 }
               },
               React.createElement(
@@ -251,17 +300,134 @@ var Content = function (_React$Component2) {
   return Content;
 }(React.Component);
 
-var Page = function (_React$Component3) {
-  _inherits(Page, _React$Component3);
+var DatasetList = function (_React$Component3) {
+  _inherits(DatasetList, _React$Component3);
+
+  function DatasetList(props) {
+    _classCallCheck(this, DatasetList);
+
+    var _this5 = _possibleConstructorReturn(this, (DatasetList.__proto__ || Object.getPrototypeOf(DatasetList)).call(this, props));
+
+    _this5.state = {};
+    return _this5;
+  }
+
+  _createClass(DatasetList, [{
+    key: "downloadDataset",
+    value: function () {
+      var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(id, datasetName) {
+        var result, element;
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                _context2.next = 2;
+                return $.ajax({
+                  type: "GET",
+                  url: '/getDatasetCSV',
+                  data: {
+                    datasetID: id
+                  }
+                });
+
+              case 2:
+                result = _context2.sent;
+
+
+                // Borrowed from https://stackoverflow.com/questions/3665115/create-a-file-in-memory-for-user-to-download-not-through-server
+                element = document.createElement('a');
+
+                element.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(result));
+                element.setAttribute('download', datasetName + ".csv");
+
+                element.style.display = 'none';
+                document.body.appendChild(element);
+
+                element.click();
+
+                document.body.removeChild(element);
+
+              case 10:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, this);
+      }));
+
+      function downloadDataset(_x, _x2) {
+        return _ref2.apply(this, arguments);
+      }
+
+      return downloadDataset;
+    }()
+  }, {
+    key: "render",
+    value: function render() {
+      var _this6 = this;
+
+      var userDatasets = this.props.userDatasets;
+
+      return React.createElement(
+        "div",
+        { id: "datasetListContainer" },
+        userDatasets.map(function (dataset) {
+          return React.createElement(
+            "div",
+            { className: "datasetListItem" },
+            React.createElement(
+              "span",
+              { className: "datasetListItemSpan datasetListItemName" },
+              dataset.datasetName
+            ),
+            React.createElement(
+              "span",
+              { className: "datasetListItemSpan datasetListItemDate" },
+              "Last edited: ",
+              new Date(dataset.lastEdited).toDateString()
+            ),
+            React.createElement(
+              "span",
+              { className: "datasetListItemSpan datasetListItemLink" },
+              "View"
+            ),
+            React.createElement(
+              "span",
+              { className: "datasetListItemSpan datasetListItemLink", onClick: function onClick() {
+                  _this6.downloadDataset(dataset._id, dataset.datasetName);
+                } },
+              "Download"
+            ),
+            React.createElement(
+              "span",
+              { className: "datasetListItemSpan datasetListItemLink" },
+              "Edit"
+            ),
+            React.createElement(
+              "span",
+              { className: "datasetListItemSpan datasetListItemLink" },
+              "Delete"
+            )
+          );
+        })
+      );
+    }
+  }]);
+
+  return DatasetList;
+}(React.Component);
+
+var Page = function (_React$Component4) {
+  _inherits(Page, _React$Component4);
 
   function Page(props) {
     _classCallCheck(this, Page);
 
-    var _this4 = _possibleConstructorReturn(this, (Page.__proto__ || Object.getPrototypeOf(Page)).call(this, props));
+    var _this7 = _possibleConstructorReturn(this, (Page.__proto__ || Object.getPrototypeOf(Page)).call(this, props));
 
-    _this4.state = {};
+    _this7.state = {};
 
-    return _this4;
+    return _this7;
   }
 
   _createClass(Page, [{

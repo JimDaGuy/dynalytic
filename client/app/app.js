@@ -22,20 +22,40 @@ class Content extends React.Component {
     super(props);
 
     this.state = {
-      selectedPage: "home"
+      selectedPage: "home",
+      userDatasets: [],
     };
 
     this.selectPage = this.selectPage.bind(this);
+    this.getUserDatasets = this.getUserDatasets.bind(this);
   }
 
   selectPage(pageName) {
     this.setState({ selectedPage: pageName });
+    if (pageName === "myData") {
+      this.getUserDatasets()
+        .then(response => this.setState({
+          userDatasets: response.datasets,
+        }))
+        .catch(err => {
+          console.dir(err);
+        });
+    }
+  }
+
+  async getUserDatasets() {
+    const result = await $.ajax({
+      type: "GET",
+      url: '/getDatasetList',
+    });
+
+    return JSON.parse(result);
   }
 
   submitCSV(csrf) {
     const csvFile = $('#csvUpload')[0].files[0];
     const datasetName = $('#datasetName')[0].value;
-    
+
     if (!csvFile) {
       console.dir('No file selected');
       // Throw clientside error 'No file selected'
@@ -47,7 +67,6 @@ class Content extends React.Component {
     reader.onload = (e) => {
       const csv = e.target.result;
       const data = $.csv.toObjects(csv);
-      console.dir(data);
 
       //Disable submit button while submitting
       $('#csvButton').attr('disabled', 'disabled');
@@ -80,7 +99,7 @@ class Content extends React.Component {
       case "home":
         page =
           <div id="homePage" className="selectedDashboardPage" >
-            <h1>Hiya!</h1>
+            <h1>Hi, hello, welcome.</h1>
           </div>;
         break;
       case "addData":
@@ -96,6 +115,7 @@ class Content extends React.Component {
         page =
           <div id="myDataPage" className="selectedDashboardPage" >
             <h1>Here's your data</h1>
+            <DatasetList userDatasets={this.state.userDatasets} />
           </div>;
         break;
       case "analytics":
@@ -143,6 +163,57 @@ class Content extends React.Component {
         </div>
       </div>
     );
+  }
+}
+
+class DatasetList extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+
+    };
+  }
+
+  async downloadDataset(id, datasetName) {
+    const result = await $.ajax({
+      type: "GET",
+      url: '/getDatasetCSV',
+      data: {
+        datasetID: id,
+      }
+    });
+
+    // Borrowed from https://stackoverflow.com/questions/3665115/create-a-file-in-memory-for-user-to-download-not-through-server
+    const element = document.createElement('a');
+    element.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(result));
+    element.setAttribute('download', `${datasetName}.csv`);
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
+  }
+
+  render() {
+    const userDatasets = this.props.userDatasets;
+
+    return (
+      <div id="datasetListContainer">
+        {userDatasets.map((dataset) => {
+          return <div className="datasetListItem">
+            <span className="datasetListItemSpan datasetListItemName">{dataset.datasetName}</span>
+            <span className="datasetListItemSpan datasetListItemDate">Last edited: {new Date(dataset.lastEdited).toDateString()}</span>
+            <span className="datasetListItemSpan datasetListItemLink">View</span>
+            <span className="datasetListItemSpan datasetListItemLink" onClick={() => { this.downloadDataset(dataset._id, dataset.datasetName) }}>Download</span>
+            <span className="datasetListItemSpan datasetListItemLink">Edit</span>
+            <span className="datasetListItemSpan datasetListItemLink">Delete</span>
+          </div>;
+        })}
+      </div>
+    )
   }
 }
 

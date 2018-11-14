@@ -94,4 +94,63 @@ html, body {
     background-color: rgb(75, 60, 72);
     float: left;
   }
+
+  .selectedDashboardPage {
+    padding: 10px;
+
+    h1 {
+      margin: 0 0 5px 0;
+      max-height: 20%;
+    }
+
+    #datasetListContainer {
+      width: 90%;
+      margin: 0 auto;
+      height: 80%;
+      background-color: rgb(0, 0, 0);
+      border-radius: 5px;
+      overflow-y: scroll;
+
+      .datasetListItem {
+        width: 100%;
+        height: 35px;
+        border-bottom: 2px solid black;
+        background-color: pink;
+        overflow: hidden;
+        line-height: 15px;
+
+        .datasetListItemSpan {
+          float: left;
+          margin: 10px 10px;
+        }
+
+        .datasetListItemLink {
+          color: rgb(89, 196, 238);
+          font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
+
+        .datasetListItemLink:hover {
+          color: #d16d9f;
+          cursor: pointer;
+        }
+      }
+    }
+
+    /*
+    Scroll-bar borrowed from https://codepen.io/GhostRider/pen/GHaFw
+    */
+    #datasetListContainer::-webkit-scrollbar-track {
+      -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+      background-color: rgb(14, 10, 10);
+    }
+
+    #datasetListContainer::-webkit-scrollbar {
+      width: 6px;
+      background-color: rgb(14, 10, 10);
+    }
+
+    #datasetListContainer::-webkit-scrollbar-thumb {
+      background-color: #d16d9f;
+    }
+  }
 }

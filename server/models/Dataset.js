@@ -17,6 +17,14 @@ const DatasetSchema = new mongoose.Schema({
   entries: {
     type: Array,
   },
+  creationDate: {
+    type: Date,
+    default: Date.now,
+  },
+  lastEdited: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 DatasetSchema.statics.checkDatasetName = (owner, datasetName, callback) => {
@@ -25,9 +33,24 @@ DatasetSchema.statics.checkDatasetName = (owner, datasetName, callback) => {
     datasetName,
   };
 
-  return DatasetModel.findOne(searchParams, (err, result) => {
-    callback(err, result);
-  });
+  return DatasetModel.findOne(searchParams).exec(callback);
+};
+
+DatasetSchema.statics.getDatasetList = (owner, callback) => {
+  const searchParams = { owner };
+  const returnedFields = ['datasetName', 'lastEdited', '_id'];
+  const sortBy = { lastEdited: -1 };
+
+  return DatasetModel.find(searchParams).select(returnedFields).sort(sortBy)
+  .exec(callback);
+};
+
+DatasetSchema.statics.getDataset = (owner, datasetId, callback) => {
+  const searchParams = { owner, _id: datasetId };
+  const returnedFields = ['datasetName', 'columns', 'entries', 'lastEdited'];
+
+  return DatasetModel.findOne(searchParams).select(returnedFields).lean()
+  .exec(callback);
 };
 
 DatasetModel = mongoose.model('Dataset', DatasetSchema);

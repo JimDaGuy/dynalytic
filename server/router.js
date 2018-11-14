@@ -13,6 +13,14 @@ const router = (app) => {
 
   app.post('/upload', mid.requiresSecure, mid.requiresLogin, controllers.Dataset.uploadDataset);
 
+  // Get Information
+  app.get('/getDatasetList', mid.requiresSecure, mid.requiresLogin,
+  controllers.Dataset.getDatasetList);
+  app.get('/getDataset', mid.requiresSecure, mid.requiresLogin,
+  controllers.Dataset.getDataset);
+  app.get('/getDatasetCSV', mid.requiresSecure, mid.requiresLogin,
+  controllers.Dataset.getDatasetCSV);
+
   // Security
   app.get('/getToken', mid.requiresSecure, controllers.Helper.getToken);
 };

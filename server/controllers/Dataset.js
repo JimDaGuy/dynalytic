@@ -1,11 +1,9 @@
 const models = require('../models');
+const JSONCSVParser = require('json2csv').Parser;
 
 const Dataset = models.Dataset;
 
-const createDataset = (datasetName, headings, callback) => {
-  callback();
-};
-
+// eslint-disable-next-line consistent-return
 const uploadDataset = (req, res) => {
   if (!req.body.datasetName) {
     return res.status(400).json({ error: 'Dataset name is required' });
@@ -16,6 +14,7 @@ const uploadDataset = (req, res) => {
   const csvData = req.body.csvData;
 
   // Check availability of dataset name for user
+  // eslint-disable-next-line consistent-return
   Dataset.DatasetModel.checkDatasetName(req.session.account._id, datasetName, (err, result) => {
     if (err) {
       console.dir(`Error searching dataset name availability: ${err}`);
@@ -55,4 +54,64 @@ const uploadDataset = (req, res) => {
   });
 };
 
+const getDatasetList = (req, res) => {
+  Dataset.DatasetModel.getDatasetList(req.session.account._id, (err, result) => {
+    if (err) {
+      console.dir(`Error fetching dataset list: ${err}`);
+      return res.status(400).json({ error: 'Error fetching dataset list' });
+    }
+
+    const datasetResults = {
+      datasets: result,
+    };
+
+    return res.status(200).send(JSON.stringify(datasetResults));
+  });
+};
+
+// eslint-disable-next-line consistent-return
+const getDataset = (req, res) => {
+  if (!req.query.datasetID) {
+    return res.status(400).json({ error: 'Dataset ID required for dataset lookup' });
+  }
+
+  Dataset.DatasetModel.getDataset(req.session.account._id, req.query.datasetID, (err, result) => {
+    if (err) {
+      console.dir(`Error fetching dataset: ${err}`);
+      return res.status(400).json({ error: 'Error fetching dataset' });
+    }
+
+    const datasetResults = {
+      dataset: result,
+    };
+
+    return res.status(200).send(JSON.stringify(datasetResults));
+  });
+};
+
+// eslint-disable-next-line consistent-return
+const getDatasetCSV = (req, res) => {
+  if (!req.query.datasetID) {
+    return res.status(400).json({ error: 'Dataset ID required for dataset lookup' });
+  }
+
+  Dataset.DatasetModel.getDataset(req.session.account._id, req.query.datasetID, (err, result) => {
+    if (err) {
+      console.dir(`Error fetching dataset: ${err}`);
+      return res.status(400).json({ error: 'Error fetching dataset' });
+    }
+
+    const fields = result.columns;
+    const values = result.entries;
+
+    const jcParser = new JSONCSVParser({ fields });
+    const parsedCSV = jcParser.parse(values);
+
+    return res.status(200).send(parsedCSV);
+  });
+};
+
 module.exports.uploadDataset = uploadDataset;
+module.exports.getDatasetList = getDatasetList;
+module.exports.getDataset = getDataset;
+module.exports.getDatasetCSV = getDatasetCSV;
