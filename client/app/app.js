@@ -29,7 +29,7 @@ class WelcomeHome extends React.Component {
   render() {
     return (
       <div id="welcomeContainer">
-        
+
       </div>
     );
   }
@@ -88,9 +88,15 @@ class AddDataset extends React.Component {
 
     return (
       <div id="addDataContainer">
-        <input id="csvUpload" type="file" accept=".csv" />
+        <span id="addDataSubheading">Upload a CSV file, enter a dataset name, and click create!</span>
+        <label id="datasetNameLabel">Dataset Name:</label>
         <input id="datasetName" type="text" placeholder="Dataset name" />
-        <button id='csvButton' type="button" onClick={() => this.submitCSV(csrf)}>Upload CSV</button>
+        <label id="csvUploadContainer">
+          <img id="csvUploadIcon" src="/assets/img/upload_icon.png" />
+          <span id="csvUploadSpan">Upload</span>
+          <input id="csvUpload" type="file" accept=".csv" />
+        </label>
+        <button id='csvButton' type="button" onClick={() => this.submitCSV(csrf)}>Create Dataset</button>
       </div>
     );
   }
@@ -127,6 +133,22 @@ class DatasetList extends React.Component {
     document.body.removeChild(element);
   }
 
+  async removeDataset(id) {
+    const result = await $.ajax({
+      type: 'DELETE',
+      url: '/removeDataset',
+      data: {
+        datasetID: id,
+        _csrf: this.props.csrf,
+      },
+      success: () => {
+        this.props.getUserDatasets();
+      },
+    });
+
+    console.dir(result);
+  }
+
   render() {
     const userDatasets = this.props.userDatasets;
 
@@ -138,8 +160,7 @@ class DatasetList extends React.Component {
             <span className="datasetListItemSpan datasetListItemDate">Last edited: {new Date(dataset.lastEdited).toDateString()}</span>
             <span className="datasetListItemSpan datasetListItemLink">View</span>
             <span className="datasetListItemSpan datasetListItemLink" onClick={() => { this.downloadDataset(dataset._id, dataset.datasetName) }}>Download</span>
-            <span className="datasetListItemSpan datasetListItemLink">Edit</span>
-            <span className="datasetListItemSpan datasetListItemLink">Delete</span>
+            <span className="datasetListItemSpan datasetListItemLink" onClick={() => { this.removeDataset(dataset._id) }}>Delete</span>
           </div>;
         })}
       </div>
@@ -181,23 +202,22 @@ class Content extends React.Component {
   selectPage(pageName) {
     this.setState({ selectedPage: pageName });
     if (pageName === "myData") {
-      this.getUserDatasets()
-        .then(response => this.setState({
-          userDatasets: response.datasets,
-        }))
-        .catch(err => {
-          console.dir(err);
-        });
+      this.getUserDatasets();
     }
   }
 
   async getUserDatasets() {
-    const result = await $.ajax({
+    await $.ajax({
       type: "GET",
       url: '/getDatasetList',
+      success: (response) => {
+        response = JSON.parse(response);
+        this.setState({ userDatasets: response.datasets });
+      },
+      error: (err) => {
+        console.dir(err);
+      }
     });
-
-    return JSON.parse(result);
   }
 
   render() {
@@ -208,14 +228,14 @@ class Content extends React.Component {
       case "home":
         page =
           <div id="homePage" className="selectedDashboardPage" >
-            <h1>Hi, hello, welcome.</h1>
+            <h1>Welcome!</h1>
             <WelcomeHome />
           </div>;
         break;
       case "addData":
         page =
           <div id="addDataPage" className="selectedDashboardPage" >
-            <h1>Add some data</h1>
+            <h1>Create a dataset</h1>
             <AddDataset csrf={csrf} />
           </div>;
         break;
@@ -223,7 +243,7 @@ class Content extends React.Component {
         page =
           <div id="myDataPage" className="selectedDashboardPage" >
             <h1>Here's your data</h1>
-            <DatasetList userDatasets={this.state.userDatasets} />
+            <DatasetList csrf={csrf} getUserDatasets={this.getUserDatasets} userDatasets={this.state.userDatasets} />
           </div>;
         break;
       case "analytics":
@@ -251,13 +271,13 @@ class Content extends React.Component {
               className={`sidebarItem ${this.state.selectedPage === 'addData' ? 'selectedSidebarItem' : ''}`}
               onClick={() => this.selectPage('addData')}
             >
-              <span className="sidebarSpan">Add Datasets</span>
+              <span className="sidebarSpan">Create Datasets</span>
             </div>
             <div
               className={`sidebarItem ${this.state.selectedPage === 'myData' ? 'selectedSidebarItem' : ''}`}
               onClick={() => this.selectPage('myData')}
             >
-              <span className="sidebarSpan">My Datasets</span>
+              <span className="sidebarSpan">View Datasets</span>
             </div>
             <div
               className={`sidebarItem ${this.state.selectedPage === 'analytics' ? 'selectedSidebarItem' : ''}`}

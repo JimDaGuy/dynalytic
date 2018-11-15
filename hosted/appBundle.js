@@ -130,14 +130,34 @@ var AddDataset = function (_React$Component3) {
       return React.createElement(
         "div",
         { id: "addDataContainer" },
-        React.createElement("input", { id: "csvUpload", type: "file", accept: ".csv" }),
+        React.createElement(
+          "span",
+          { id: "addDataSubheading" },
+          "Upload a CSV file, enter a dataset name, and click create!"
+        ),
+        React.createElement(
+          "label",
+          { id: "datasetNameLabel" },
+          "Dataset Name:"
+        ),
         React.createElement("input", { id: "datasetName", type: "text", placeholder: "Dataset name" }),
+        React.createElement(
+          "label",
+          { id: "csvUploadContainer" },
+          React.createElement("img", { id: "csvUploadIcon", src: "/assets/img/upload_icon.png" }),
+          React.createElement(
+            "span",
+            { id: "csvUploadSpan" },
+            "Upload"
+          ),
+          React.createElement("input", { id: "csvUpload", type: "file", accept: ".csv" })
+        ),
         React.createElement(
           "button",
           { id: "csvButton", type: "button", onClick: function onClick() {
               return _this4.submitCSV(csrf);
             } },
-          "Upload CSV"
+          "Create Dataset"
         )
       );
     }
@@ -208,9 +228,53 @@ var DatasetList = function (_React$Component4) {
       return downloadDataset;
     }()
   }, {
+    key: "removeDataset",
+    value: function () {
+      var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(id) {
+        var _this6 = this;
+
+        var result;
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                _context2.next = 2;
+                return $.ajax({
+                  type: 'DELETE',
+                  url: '/removeDataset',
+                  data: {
+                    datasetID: id,
+                    _csrf: this.props.csrf
+                  },
+                  success: function success() {
+                    _this6.props.getUserDatasets();
+                  }
+                });
+
+              case 2:
+                result = _context2.sent;
+
+
+                console.dir(result);
+
+              case 4:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, this);
+      }));
+
+      function removeDataset(_x3) {
+        return _ref2.apply(this, arguments);
+      }
+
+      return removeDataset;
+    }()
+  }, {
     key: "render",
     value: function render() {
-      var _this6 = this;
+      var _this7 = this;
 
       var userDatasets = this.props.userDatasets;
 
@@ -240,18 +304,15 @@ var DatasetList = function (_React$Component4) {
             React.createElement(
               "span",
               { className: "datasetListItemSpan datasetListItemLink", onClick: function onClick() {
-                  _this6.downloadDataset(dataset._id, dataset.datasetName);
+                  _this7.downloadDataset(dataset._id, dataset.datasetName);
                 } },
               "Download"
             ),
             React.createElement(
               "span",
-              { className: "datasetListItemSpan datasetListItemLink" },
-              "Edit"
-            ),
-            React.createElement(
-              "span",
-              { className: "datasetListItemSpan datasetListItemLink" },
+              { className: "datasetListItemSpan datasetListItemLink", onClick: function onClick() {
+                  _this7.removeDataset(dataset._id);
+                } },
               "Delete"
             )
           );
@@ -269,10 +330,10 @@ var Analytics = function (_React$Component5) {
   function Analytics(props) {
     _classCallCheck(this, Analytics);
 
-    var _this7 = _possibleConstructorReturn(this, (Analytics.__proto__ || Object.getPrototypeOf(Analytics)).call(this, props));
+    var _this8 = _possibleConstructorReturn(this, (Analytics.__proto__ || Object.getPrototypeOf(Analytics)).call(this, props));
 
-    _this7.state = {};
-    return _this7;
+    _this8.state = {};
+    return _this8;
   }
 
   _createClass(Analytics, [{
@@ -291,63 +352,59 @@ var Content = function (_React$Component6) {
   function Content(props) {
     _classCallCheck(this, Content);
 
-    var _this8 = _possibleConstructorReturn(this, (Content.__proto__ || Object.getPrototypeOf(Content)).call(this, props));
+    var _this9 = _possibleConstructorReturn(this, (Content.__proto__ || Object.getPrototypeOf(Content)).call(this, props));
 
-    _this8.state = {
+    _this9.state = {
       selectedPage: "home",
       userDatasets: []
     };
 
-    _this8.selectPage = _this8.selectPage.bind(_this8);
-    _this8.getUserDatasets = _this8.getUserDatasets.bind(_this8);
-    return _this8;
+    _this9.selectPage = _this9.selectPage.bind(_this9);
+    _this9.getUserDatasets = _this9.getUserDatasets.bind(_this9);
+    return _this9;
   }
 
   _createClass(Content, [{
     key: "selectPage",
     value: function selectPage(pageName) {
-      var _this9 = this;
-
       this.setState({ selectedPage: pageName });
       if (pageName === "myData") {
-        this.getUserDatasets().then(function (response) {
-          return _this9.setState({
-            userDatasets: response.datasets
-          });
-        }).catch(function (err) {
-          console.dir(err);
-        });
+        this.getUserDatasets();
       }
     }
   }, {
     key: "getUserDatasets",
     value: function () {
-      var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-        var result;
-        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+      var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+        var _this10 = this;
+
+        return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
-            switch (_context2.prev = _context2.next) {
+            switch (_context3.prev = _context3.next) {
               case 0:
-                _context2.next = 2;
+                _context3.next = 2;
                 return $.ajax({
                   type: "GET",
-                  url: '/getDatasetList'
+                  url: '/getDatasetList',
+                  success: function success(response) {
+                    response = JSON.parse(response);
+                    _this10.setState({ userDatasets: response.datasets });
+                  },
+                  error: function error(err) {
+                    console.dir(err);
+                  }
                 });
 
               case 2:
-                result = _context2.sent;
-                return _context2.abrupt("return", JSON.parse(result));
-
-              case 4:
               case "end":
-                return _context2.stop();
+                return _context3.stop();
             }
           }
-        }, _callee2, this);
+        }, _callee3, this);
       }));
 
       function getUserDatasets() {
-        return _ref2.apply(this, arguments);
+        return _ref3.apply(this, arguments);
       }
 
       return getUserDatasets;
@@ -355,7 +412,7 @@ var Content = function (_React$Component6) {
   }, {
     key: "render",
     value: function render() {
-      var _this10 = this;
+      var _this11 = this;
 
       var csrf = this.props.csrf;
       var page = void 0;
@@ -368,7 +425,7 @@ var Content = function (_React$Component6) {
             React.createElement(
               "h1",
               null,
-              "Hi, hello, welcome."
+              "Welcome!"
             ),
             React.createElement(WelcomeHome, null)
           );
@@ -380,7 +437,7 @@ var Content = function (_React$Component6) {
             React.createElement(
               "h1",
               null,
-              "Add some data"
+              "Create a dataset"
             ),
             React.createElement(AddDataset, { csrf: csrf })
           );
@@ -394,7 +451,7 @@ var Content = function (_React$Component6) {
               null,
               "Here's your data"
             ),
-            React.createElement(DatasetList, { userDatasets: this.state.userDatasets })
+            React.createElement(DatasetList, { csrf: csrf, getUserDatasets: this.getUserDatasets, userDatasets: this.state.userDatasets })
           );
           break;
         case "analytics":
@@ -427,7 +484,7 @@ var Content = function (_React$Component6) {
               {
                 className: "sidebarItem " + (this.state.selectedPage === 'home' ? 'selectedSidebarItem' : ''),
                 onClick: function onClick() {
-                  return _this10.selectPage('home');
+                  return _this11.selectPage('home');
                 }
               },
               React.createElement(
@@ -441,13 +498,13 @@ var Content = function (_React$Component6) {
               {
                 className: "sidebarItem " + (this.state.selectedPage === 'addData' ? 'selectedSidebarItem' : ''),
                 onClick: function onClick() {
-                  return _this10.selectPage('addData');
+                  return _this11.selectPage('addData');
                 }
               },
               React.createElement(
                 "span",
                 { className: "sidebarSpan" },
-                "Add Datasets"
+                "Create Datasets"
               )
             ),
             React.createElement(
@@ -455,13 +512,13 @@ var Content = function (_React$Component6) {
               {
                 className: "sidebarItem " + (this.state.selectedPage === 'myData' ? 'selectedSidebarItem' : ''),
                 onClick: function onClick() {
-                  return _this10.selectPage('myData');
+                  return _this11.selectPage('myData');
                 }
               },
               React.createElement(
                 "span",
                 { className: "sidebarSpan" },
-                "My Datasets"
+                "View Datasets"
               )
             ),
             React.createElement(
@@ -469,7 +526,7 @@ var Content = function (_React$Component6) {
               {
                 className: "sidebarItem " + (this.state.selectedPage === 'analytics' ? 'selectedSidebarItem' : ''),
                 onClick: function onClick() {
-                  return _this10.selectPage('analytics');
+                  return _this11.selectPage('analytics');
                 }
               },
               React.createElement(
@@ -498,11 +555,11 @@ var Page = function (_React$Component7) {
   function Page(props) {
     _classCallCheck(this, Page);
 
-    var _this11 = _possibleConstructorReturn(this, (Page.__proto__ || Object.getPrototypeOf(Page)).call(this, props));
+    var _this12 = _possibleConstructorReturn(this, (Page.__proto__ || Object.getPrototypeOf(Page)).call(this, props));
 
-    _this11.state = {};
+    _this12.state = {};
 
-    return _this11;
+    return _this12;
   }
 
   _createClass(Page, [{

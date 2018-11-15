@@ -53,6 +53,12 @@ DatasetSchema.statics.getDataset = (owner, datasetId, callback) => {
   .exec(callback);
 };
 
+DatasetSchema.statics.removeDataset = (owner, datasetId, callback) => {
+  const searchParams = { owner, _id: datasetId };
+
+  return DatasetModel.remove(searchParams).exec(callback);
+};
+
 DatasetModel = mongoose.model('Dataset', DatasetSchema);
 
 module.exports.DatasetModel = DatasetModel;

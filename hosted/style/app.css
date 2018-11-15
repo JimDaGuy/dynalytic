@@ -40,7 +40,7 @@ html, body {
   border: 1px solid #3a1637;
   margin: 10px auto; }
   #dashboard #sidebar {
-    width: 12.5%;
+    width: 20%;
     height: calc(100% - 2px);
     background-color: black;
     border: 1px solid #3a1637;
@@ -52,7 +52,8 @@ html, body {
       background-color: black;
       color: white;
       border: 1px solid #4b3c48;
-      text-align: center; }
+      text-align: center;
+      overflow: hidden; }
     #dashboard #sidebar .sidebarItem:hover {
       background-color: #b8afaf; }
     #dashboard #sidebar .sidebarSpan {
@@ -62,7 +63,7 @@ html, body {
     #dashboard #sidebar .selectedSidebarItem {
       background-color: #4b3c48; }
   #dashboard #dashboardPage {
-    width: calc(87.5% - 4px);
+    width: calc(80% - 4px);
     height: calc(100% - 2px);
     margin: 1px 0 0 1px;
     background-color: #4b3c48;
@@ -89,6 +90,54 @@ html, body {
       height: 80%;
       background-color: black;
       border-radius: 5px; }
+      #dashboard .selectedDashboardPage #addDataContainer #addDataSubheading {
+        line-height: 20px;
+        margin: 10px;
+        color: white;
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; }
+      #dashboard .selectedDashboardPage #addDataContainer #datasetNameLabel {
+        margin: 10px;
+        float: left;
+        color: white;
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        font-weight: bold; }
+      #dashboard .selectedDashboardPage #addDataContainer #datasetName {
+        margin: 10px;
+        float: left;
+        clear: right; }
+      #dashboard .selectedDashboardPage #addDataContainer #csvUploadContainer {
+        overflow: hidden;
+        position: relative;
+        margin: 10px;
+        background: greenyellow;
+        border-radius: 5px;
+        float: left;
+        height: 20px;
+        padding: 5px;
+        clear: both; }
+      #dashboard .selectedDashboardPage #addDataContainer #csvUploadIcon {
+        width: 20px;
+        height: 20px; }
+      #dashboard .selectedDashboardPage #addDataContainer #csvUploadSpan {
+        margin: 5px 0;
+        line-height: 20px;
+        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; }
+      #dashboard .selectedDashboardPage #addDataContainer #csvUpload {
+        cursor: pointer;
+        display: block;
+        font-size: 999px;
+        filter: alpha(opacity=0);
+        min-height: 100%;
+        min-width: 100%;
+        opacity: 0;
+        position: absolute;
+        right: 0;
+        text-align: right;
+        top: 0; }
+      #dashboard .selectedDashboardPage #addDataContainer #csvButton {
+        margin: 10px;
+        float: left;
+        clear: both; }
     #dashboard .selectedDashboardPage #datasetListContainer {
       width: 90%;
       margin: 0 auto;

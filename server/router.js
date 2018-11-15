@@ -21,6 +21,10 @@ const router = (app) => {
   app.get('/getDatasetCSV', mid.requiresSecure, mid.requiresLogin,
   controllers.Dataset.getDatasetCSV);
 
+  // Remove Information
+  app.delete('/removeDataset', mid.requiresSecure, mid.requiresLogin,
+  controllers.Dataset.removeDataset);
+
   // Security
   app.get('/getToken', mid.requiresSecure, controllers.Helper.getToken);
 };

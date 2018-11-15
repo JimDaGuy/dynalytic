@@ -56,7 +56,7 @@ html, body {
   margin: 10px auto; 
 
   #sidebar {
-    width: 12.5%;
+    width: 20%;
     height: calc(100% - 2px);
     background-color: black;
     border: 1px solid rgb(58, 22, 55);
@@ -70,6 +70,7 @@ html, body {
       color: white;
       border: 1px solid rgb(75, 60, 72);
       text-align: center;
+      overflow: hidden;
     }
 
     .sidebarItem:hover {
@@ -88,7 +89,7 @@ html, body {
   }
 
   #dashboardPage {
-    width: calc(87.5% - 4px);
+    width: calc(80% - 4px);
     height: calc(100% - 2px);
     margin: 1px 0 0 1px;
     background-color: rgb(75, 60, 72);
@@ -119,6 +120,73 @@ html, body {
       height: 80%;
       background-color: rgb(0, 0, 0);
       border-radius: 5px;
+
+      #addDataSubheading {
+        line-height: 20px;
+        margin: 10px;
+        color: white;
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+      }
+
+      #datasetNameLabel {
+        margin: 10px;
+        float: left;
+        color: white;
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        font-weight: bold;
+      }
+
+      #datasetName {
+        margin: 10px;
+        float: left;
+        clear: right;
+      }
+
+      #csvUploadContainer {
+        overflow: hidden;
+        position: relative;
+        margin: 10px;
+
+        background: greenyellow;
+        border-radius: 5px;
+        float: left;
+
+        height: 20px;
+        padding: 5px;
+
+        clear: both;
+      }
+
+      #csvUploadIcon {
+        width: 20px;
+        height: 20px;
+      }
+
+      #csvUploadSpan {
+        margin: 5px 0;
+        line-height: 20px;
+        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+      }
+
+      #csvUpload {
+        cursor: pointer;
+        display: block;
+        font-size: 999px;
+        filter: alpha(opacity=0);
+        min-height: 100%;
+        min-width: 100%;
+        opacity: 0;
+        position: absolute;
+        right: 0;
+        text-align: right;
+        top: 0;
+      }
+
+      #csvButton {
+        margin: 10px;
+        float: left;
+        clear: both;
+      }
     }
 
     #datasetListContainer {

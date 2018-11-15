@@ -111,7 +111,24 @@ const getDatasetCSV = (req, res) => {
   });
 };
 
+// eslint-disable-next-line consistent-return
+const removeDataset = (req, res) => {
+  if (!req.body.datasetID) {
+    return res.status(400).json({ error: 'Dataset ID required to delete dataset' });
+  }
+
+  Dataset.DatasetModel.removeDataset(req.session.account._id, req.body.datasetID, (err) => {
+    if (err) {
+      console.dir(`Error removing dataset: ${err}`);
+      return res.status(400).json({ error: 'Error removing dataset' });
+    }
+
+    return res.status(200).json({ message: 'Dataset successfully removed' });
+  });
+};
+
 module.exports.uploadDataset = uploadDataset;
 module.exports.getDatasetList = getDatasetList;
 module.exports.getDataset = getDataset;
 module.exports.getDatasetCSV = getDatasetCSV;
+module.exports.removeDataset = removeDataset;
