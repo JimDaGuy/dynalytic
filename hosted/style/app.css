@@ -88,7 +88,7 @@ html, body {
       width: 90%;
       margin: 0 auto;
       height: 80%;
-      background-color: black;
+      background-color: pink;
       border-radius: 5px; }
       #dashboard .selectedDashboardPage #addDataContainer #addDataSubheading {
         line-height: 20px;
@@ -109,12 +109,14 @@ html, body {
         overflow: hidden;
         position: relative;
         margin: 10px;
-        background: greenyellow;
+        background: orange;
         border-radius: 5px;
         float: left;
         height: 20px;
         padding: 5px;
         clear: both; }
+      #dashboard .selectedDashboardPage #addDataContainer .uploadedCSV {
+        background: greenyellow !important; }
       #dashboard .selectedDashboardPage #addDataContainer #csvUploadIcon {
         width: 20px;
         height: 20px; }
@@ -142,9 +144,42 @@ html, body {
       width: 90%;
       margin: 0 auto;
       height: 80%;
-      background-color: black;
       border-radius: 5px;
-      overflow-y: scroll; }
+      overflow: scroll;
+      background-color: pink; }
+      #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer #datasetViewHeader {
+        min-width: calc(100% - 20px);
+        height: 25px;
+        background-color: pink;
+        overflow: hidden;
+        line-height: 25px;
+        padding: 10px; }
+        #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer #datasetViewHeader #datasetViewName {
+          color: white;
+          margin: 0;
+          width: 50%;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          float: left; }
+        #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer #datasetViewHeader #unviewDatasetButton {
+          float: left; }
+      #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer .datasetViewListItem {
+        min-width: 100%;
+        height: 35px;
+        background-color: pink;
+        line-height: 15px;
+        white-space: nowrap; }
+      #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer .datasetColumnBox {
+        font-weight: bold; }
+      #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer .datasetItemBox {
+        width: 30%;
+        height: 28px;
+        border: 1px solid black;
+        display: inline-block;
+        overflow: hidden;
+        line-height: 25px;
+        padding: 5px; }
       #dashboard .selectedDashboardPage #datasetListContainer .datasetListItem {
         width: 100%;
         height: 35px;

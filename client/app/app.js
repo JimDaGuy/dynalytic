@@ -40,8 +40,10 @@ class AddDataset extends React.Component {
     super(props);
 
     this.state = {
-
+      fileUploaded: false,
     };
+
+    this.updateUpload = this.updateUpload.bind(this);
   }
 
   submitCSV(csrf) {
@@ -83,6 +85,17 @@ class AddDataset extends React.Component {
     };
   };
 
+  updateUpload() {
+    const csvFile = $('#csvUpload')[0].files[0];
+    
+    // If a file is uploaded add a different class to it, else remove it
+    if (csvFile) {
+      this.setState({ fileUploaded: true });
+    } else {
+      this.setState({ fileUploaded: false });
+    }
+  }
+
   render() {
     const csrf = this.props.csrf;
 
@@ -91,14 +104,95 @@ class AddDataset extends React.Component {
         <span id="addDataSubheading">Upload a CSV file, enter a dataset name, and click create!</span>
         <label id="datasetNameLabel">Dataset Name:</label>
         <input id="datasetName" type="text" placeholder="Dataset name" />
-        <label id="csvUploadContainer">
+        <label id="csvUploadContainer" className={this.state.fileUploaded ? 'uploadedCSV': null} >
           <img id="csvUploadIcon" src="/assets/img/upload_icon.png" />
           <span id="csvUploadSpan">Upload</span>
-          <input id="csvUpload" type="file" accept=".csv" />
+          <input id="csvUpload" type="file" accept=".csv" onChange={this.updateUpload} />
         </label>
         <button id='csvButton' type="button" onClick={() => this.submitCSV(csrf)}>Create Dataset</button>
       </div>
     );
+  }
+}
+
+class ViewedDataset extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      datasetName: '',
+      columns: [],
+      entries: [],
+      loading: true,
+    };
+
+    this.getDatasetInfo = this.getDatasetInfo.bind(this);
+  }
+
+  componentDidMount() {
+    this.getDatasetInfo();
+  }
+
+  async getDatasetInfo() {
+    await $.ajax({
+      type: "GET",
+      url: '/getDataset',
+      data: {
+        datasetID: this.props.datasetID,
+      },
+      success: (response) => {
+        response = JSON.parse(response);
+        const dataset = response.dataset;
+        console.dir(dataset);
+        this.setState({
+          datasetName: dataset.datasetName,
+          columns: dataset.columns,
+          entries: dataset.entries,
+          loading: false,
+        });
+      },
+      error: (err) => {
+        console.dir(err);
+      }
+    });
+  }
+
+  render() {
+    const datasetID = this.props.datasetID;
+    const unviewDataset = this.props.unviewDataset;
+
+    const datasetName = this.state.datasetName;
+    const columns = this.state.columns;
+    const entries = this.state.entries;
+    const loading = this.state.loading;
+
+    return (
+      <div id="datasetViewContainer">
+        {loading ?
+          <div><span>Loading...</span></div>
+          :
+          <div>
+            <div id="datasetViewHeader">
+              <h2 id="datasetViewName">{datasetName}</h2>
+              <button id="unviewDatasetButton" onClick={unviewDataset} >Return to Dataset List</button>
+            </div>
+            <div className="datasetViewListItem">
+              {columns.map((column) => {
+                return <div className="datasetItemBox datasetColumnBox">{column}</div>
+              })}
+            </div>
+            {entries.map((entry, index) => {
+              return <div className="datasetViewListItem">
+                {columns.map((column) => {
+                  return <div className="datasetItemBox">{entry[column]}</div>
+                })
+                }
+              </div>;
+            })}
+          </div>
+        }
+      </div>
+    )
   }
 }
 
@@ -107,8 +201,19 @@ class DatasetList extends React.Component {
     super(props);
 
     this.state = {
-
+      selectedID: '',
     };
+
+    this.viewDataset = this.viewDataset.bind(this);
+    this.unviewDataset = this.unviewDataset.bind(this);
+  }
+
+  viewDataset(id) {
+    this.setState({ selectedID: id });
+  }
+
+  unviewDataset() {
+    this.setState({ selectedID: '' });
   }
 
   async downloadDataset(id, datasetName) {
@@ -151,18 +256,25 @@ class DatasetList extends React.Component {
 
   render() {
     const userDatasets = this.props.userDatasets;
+    let viewing = this.state.selectedID !== '';
 
     return (
       <div id="datasetListContainer">
-        {userDatasets.map((dataset) => {
-          return <div className="datasetListItem">
-            <span className="datasetListItemSpan datasetListItemName">{dataset.datasetName}</span>
-            <span className="datasetListItemSpan datasetListItemDate">Last edited: {new Date(dataset.lastEdited).toDateString()}</span>
-            <span className="datasetListItemSpan datasetListItemLink">View</span>
-            <span className="datasetListItemSpan datasetListItemLink" onClick={() => { this.downloadDataset(dataset._id, dataset.datasetName) }}>Download</span>
-            <span className="datasetListItemSpan datasetListItemLink" onClick={() => { this.removeDataset(dataset._id) }}>Delete</span>
-          </div>;
-        })}
+        {viewing ?
+          <ViewedDataset datasetID={this.state.selectedID} unviewDataset={this.unviewDataset} />
+          :
+          <div>
+            {userDatasets.map((dataset) => {
+              return <div className="datasetListItem">
+                <span className="datasetListItemSpan datasetListItemName">{dataset.datasetName}</span>
+                <span className="datasetListItemSpan datasetListItemDate">Last edited: {new Date(dataset.lastEdited).toDateString()}</span>
+                <span className="datasetListItemSpan datasetListItemLink" onClick={() => { this.viewDataset(dataset._id) }}>View</span>
+                <span className="datasetListItemSpan datasetListItemLink" onClick={() => { this.downloadDataset(dataset._id, dataset.datasetName) }}>Download</span>
+                <span className="datasetListItemSpan datasetListItemLink" onClick={() => { this.removeDataset(dataset._id) }}>Delete</span>
+              </div>;
+            })}
+          </div>
+        }
       </div>
     )
   }
