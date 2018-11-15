@@ -17,39 +17,31 @@ class Header extends React.Component {
   }
 }
 
-class Content extends React.Component {
+class WelcomeHome extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      selectedPage: "home",
-      userDatasets: [],
+
     };
-
-    this.selectPage = this.selectPage.bind(this);
-    this.getUserDatasets = this.getUserDatasets.bind(this);
   }
 
-  selectPage(pageName) {
-    this.setState({ selectedPage: pageName });
-    if (pageName === "myData") {
-      this.getUserDatasets()
-        .then(response => this.setState({
-          userDatasets: response.datasets,
-        }))
-        .catch(err => {
-          console.dir(err);
-        });
-    }
+  render() {
+    return (
+      <div id="welcomeContainer">
+        
+      </div>
+    );
   }
+}
 
-  async getUserDatasets() {
-    const result = await $.ajax({
-      type: "GET",
-      url: '/getDatasetList',
-    });
+class AddDataset extends React.Component {
+  constructor(props) {
+    super(props);
 
-    return JSON.parse(result);
+    this.state = {
+
+    };
   }
 
   submitCSV(csrf) {
@@ -93,74 +85,12 @@ class Content extends React.Component {
 
   render() {
     const csrf = this.props.csrf;
-    let page;
-
-    switch (this.state.selectedPage) {
-      case "home":
-        page =
-          <div id="homePage" className="selectedDashboardPage" >
-            <h1>Hi, hello, welcome.</h1>
-          </div>;
-        break;
-      case "addData":
-        page =
-          <div id="addDataPage" className="selectedDashboardPage" >
-            <h1>Add some data</h1>
-            <input id="csvUpload" type="file" accept=".csv" />
-            <input id="datasetName" type="text" placeholder="Dataset name" />
-            <button id='csvButton' type="button" onClick={() => this.submitCSV(csrf)}>Upload CSV</button>
-          </div>;
-        break;
-      case "myData":
-        page =
-          <div id="myDataPage" className="selectedDashboardPage" >
-            <h1>Here's your data</h1>
-            <DatasetList userDatasets={this.state.userDatasets} />
-          </div>;
-        break;
-      case "analytics":
-        page =
-          <div id="analyticsPage" className="selectedDashboardPage" >
-            <h1>Analytics here!</h1>
-          </div>;
-        break;
-      default:
-        break;
-    }
 
     return (
-      <div id="content">
-        <div id="dashboard">
-          <div id="sidebar">
-            <div
-              className={`sidebarItem ${this.state.selectedPage === 'home' ? 'selectedSidebarItem' : ''}`}
-              onClick={() => this.selectPage('home')}
-            >
-              <span className="sidebarSpan">Home</span>
-            </div>
-            <div
-              className={`sidebarItem ${this.state.selectedPage === 'addData' ? 'selectedSidebarItem' : ''}`}
-              onClick={() => this.selectPage('addData')}
-            >
-              <span className="sidebarSpan">Add Datasets</span>
-            </div>
-            <div
-              className={`sidebarItem ${this.state.selectedPage === 'myData' ? 'selectedSidebarItem' : ''}`}
-              onClick={() => this.selectPage('myData')}
-            >
-              <span className="sidebarSpan">My Datasets</span>
-            </div>
-            <div
-              className={`sidebarItem ${this.state.selectedPage === 'analytics' ? 'selectedSidebarItem' : ''}`}
-              onClick={() => this.selectPage('analytics')}
-            >
-              <span className="sidebarSpan">Analytics</span>
-            </div>
-          </div>
-          <div id="dashboardPage">
-            {page}
-          </div>
-        </div>
+      <div id="addDataContainer">
+        <input id="csvUpload" type="file" accept=".csv" />
+        <input id="datasetName" type="text" placeholder="Dataset name" />
+        <button id='csvButton' type="button" onClick={() => this.submitCSV(csrf)}>Upload CSV</button>
       </div>
     );
   }
@@ -217,6 +147,134 @@ class DatasetList extends React.Component {
   }
 }
 
+class Analytics extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+
+    };
+  }
+
+  render() {
+    return (
+      <div id="analyticsContainer">
+
+      </div>
+    );
+  }
+}
+
+class Content extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      selectedPage: "home",
+      userDatasets: [],
+    };
+
+    this.selectPage = this.selectPage.bind(this);
+    this.getUserDatasets = this.getUserDatasets.bind(this);
+  }
+
+  selectPage(pageName) {
+    this.setState({ selectedPage: pageName });
+    if (pageName === "myData") {
+      this.getUserDatasets()
+        .then(response => this.setState({
+          userDatasets: response.datasets,
+        }))
+        .catch(err => {
+          console.dir(err);
+        });
+    }
+  }
+
+  async getUserDatasets() {
+    const result = await $.ajax({
+      type: "GET",
+      url: '/getDatasetList',
+    });
+
+    return JSON.parse(result);
+  }
+
+  render() {
+    const csrf = this.props.csrf;
+    let page;
+
+    switch (this.state.selectedPage) {
+      case "home":
+        page =
+          <div id="homePage" className="selectedDashboardPage" >
+            <h1>Hi, hello, welcome.</h1>
+            <WelcomeHome />
+          </div>;
+        break;
+      case "addData":
+        page =
+          <div id="addDataPage" className="selectedDashboardPage" >
+            <h1>Add some data</h1>
+            <AddDataset csrf={csrf} />
+          </div>;
+        break;
+      case "myData":
+        page =
+          <div id="myDataPage" className="selectedDashboardPage" >
+            <h1>Here's your data</h1>
+            <DatasetList userDatasets={this.state.userDatasets} />
+          </div>;
+        break;
+      case "analytics":
+        page =
+          <div id="analyticsPage" className="selectedDashboardPage" >
+            <h1>Analytics here!</h1>
+            <Analytics />
+          </div>;
+        break;
+      default:
+        break;
+    }
+
+    return (
+      <div id="content">
+        <div id="dashboard">
+          <div id="sidebar">
+            <div
+              className={`sidebarItem ${this.state.selectedPage === 'home' ? 'selectedSidebarItem' : ''}`}
+              onClick={() => this.selectPage('home')}
+            >
+              <span className="sidebarSpan">Home</span>
+            </div>
+            <div
+              className={`sidebarItem ${this.state.selectedPage === 'addData' ? 'selectedSidebarItem' : ''}`}
+              onClick={() => this.selectPage('addData')}
+            >
+              <span className="sidebarSpan">Add Datasets</span>
+            </div>
+            <div
+              className={`sidebarItem ${this.state.selectedPage === 'myData' ? 'selectedSidebarItem' : ''}`}
+              onClick={() => this.selectPage('myData')}
+            >
+              <span className="sidebarSpan">My Datasets</span>
+            </div>
+            <div
+              className={`sidebarItem ${this.state.selectedPage === 'analytics' ? 'selectedSidebarItem' : ''}`}
+              onClick={() => this.selectPage('analytics')}
+            >
+              <span className="sidebarSpan">Analytics</span>
+            </div>
+          </div>
+          <div id="dashboardPage">
+            {page}
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
 class Page extends React.Component {
   constructor(props) {
     super(props);
@@ -233,6 +291,7 @@ class Page extends React.Component {
       <div id="page">
         <Header handleLogoutClick={this.handleLogoutClick} />
         <Content csrf={csrf} />
+        <div id="footer"></div>
       </div>
     );
   };

@@ -74,7 +74,21 @@ html, body {
     */ }
     #dashboard .selectedDashboardPage h1 {
       margin: 0 0 5px 0;
-      max-height: 20%; }
+      max-height: 20%;
+      color: white;
+      font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; }
+    #dashboard .selectedDashboardPage #welcomeContainer {
+      width: 90%;
+      margin: 0 auto;
+      height: 80%;
+      background-color: black;
+      border-radius: 5px; }
+    #dashboard .selectedDashboardPage #addDataContainer {
+      width: 90%;
+      margin: 0 auto;
+      height: 80%;
+      background-color: black;
+      border-radius: 5px; }
     #dashboard .selectedDashboardPage #datasetListContainer {
       width: 90%;
       margin: 0 auto;
@@ -106,3 +120,16 @@ html, body {
       background-color: #0e0a0a; }
     #dashboard .selectedDashboardPage #datasetListContainer::-webkit-scrollbar-thumb {
       background-color: #d16d9f; }
+    #dashboard .selectedDashboardPage #analyticsContainer {
+      width: 90%;
+      margin: 0 auto;
+      height: 80%;
+      background-color: black;
+      border-radius: 5px; }
+
+#footer {
+  background-color: black;
+  min-height: 30px;
+  width: 100%;
+  position: fixed;
+  top: calc(100% - 30px); }

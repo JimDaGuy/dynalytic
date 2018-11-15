@@ -101,6 +101,24 @@ html, body {
     h1 {
       margin: 0 0 5px 0;
       max-height: 20%;
+      color: white;
+      font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    }
+
+    #welcomeContainer {
+      width: 90%;
+      margin: 0 auto;
+      height: 80%;
+      background-color: rgb(0, 0, 0);
+      border-radius: 5px;
+    }
+
+    #addDataContainer {
+      width: 90%;
+      margin: 0 auto;
+      height: 80%;
+      background-color: rgb(0, 0, 0);
+      border-radius: 5px;
     }
 
     #datasetListContainer {
@@ -152,5 +170,21 @@ html, body {
     #datasetListContainer::-webkit-scrollbar-thumb {
       background-color: #d16d9f;
     }
+
+    #analyticsContainer {
+      width: 90%;
+      margin: 0 auto;
+      height: 80%;
+      background-color: rgb(0, 0, 0);
+      border-radius: 5px;
+    }
   }
+}
+
+#footer {
+  background-color: black;
+  min-height: 30px;
+  width: 100%;
+  position: fixed;
+  top: calc(100% - 30px);
 }
