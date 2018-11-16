@@ -61,7 +61,20 @@ var WelcomeHome = function (_React$Component2) {
   _createClass(WelcomeHome, [{
     key: "render",
     value: function render() {
-      return React.createElement("div", { id: "welcomeContainer" });
+      return React.createElement(
+        "div",
+        { id: "welcomeContainer" },
+        React.createElement(
+          "h2",
+          { id: "welcomeSubheading" },
+          "Welcome to dynalytic"
+        ),
+        React.createElement(
+          "span",
+          { id: "welcomeDesc" },
+          "Upload some data to get started!"
+        )
+      );
     }
   }]);
 
@@ -147,9 +160,9 @@ var AddDataset = function (_React$Component3) {
         "div",
         { id: "addDataContainer" },
         React.createElement(
-          "span",
+          "h2",
           { id: "addDataSubheading" },
-          "Upload a CSV file, enter a dataset name, and click create!"
+          "Upload a CSV file, enter a name, and click create!"
         ),
         React.createElement(
           "label",
@@ -336,12 +349,52 @@ var DatasetList = function (_React$Component5) {
       selectedID: ''
     };
 
+    _this7.componentDidUpdate = _this7.componentDidUpdate.bind(_this7);
     _this7.viewDataset = _this7.viewDataset.bind(_this7);
     _this7.unviewDataset = _this7.unviewDataset.bind(_this7);
     return _this7;
   }
 
   _createClass(DatasetList, [{
+    key: "componentDidUpdate",
+    value: function componentDidUpdate() {
+      // Borrowed from https://stackoverflow.com/questions/11978995/how-to-change-color-of-svg-image-using-css-jquery-svg-image-replacement
+      $('img.vlIcon').each(function () {
+        console.dir('pfff');
+        var $img = $(this);
+        var imgID = $img.attr('id');
+        var imgClass = $img.attr('class');
+        var imgURL = $img.attr('src');
+
+        $.get(imgURL, function (data) {
+          // Get the SVG tag, ignore the rest
+          var $svg = $(data).find('svg');
+
+          // Add replaced image's ID to the new SVG
+          if (typeof imgID !== 'undefined') {
+            $svg = $svg.attr('id', imgID);
+          }
+          // Add replaced image's classes to the new SVG
+          if (typeof imgClass !== 'undefined') {
+            $svg = $svg.attr('class', imgClass + ' replaced-svg');
+          }
+
+          // Remove any invalid XML tags as per http://validator.w3.org
+          $svg = $svg.removeAttr('xmlns:a');
+
+          // Check if the viewport is set, if the viewport is not set the SVG wont't scale.
+          if (!$svg.attr('viewBox') && $svg.attr('height') && $svg.attr('width')) {
+            $svg.attr('viewBox', '0 0 ' + $svg.attr('height') + ' ' + $svg.attr('width'));
+          }
+
+          // Replace image with new SVG
+          $img.replaceWith($svg);
+        }, 'xml');
+      });
+
+      // this.forceUpdate();
+    }
+  }, {
     key: "viewDataset",
     value: function viewDataset(id) {
       this.setState({ selectedID: id });
@@ -457,7 +510,16 @@ var DatasetList = function (_React$Component5) {
         { id: "datasetListContainer" },
         viewing ? React.createElement(ViewedDataset, { datasetID: this.state.selectedID, unviewDataset: this.unviewDataset }) : React.createElement(
           "div",
-          null,
+          { id: "datasetListView" },
+          userDatasets.length < 1 && React.createElement(
+            "div",
+            { id: "noDatasetsContainer" },
+            React.createElement(
+              "h2",
+              { id: "noDatasetsMessage" },
+              "No datasets yet. Start uploading some data!"
+            )
+          ),
           userDatasets.map(function (dataset) {
             return React.createElement(
               "div",
@@ -477,22 +539,22 @@ var DatasetList = function (_React$Component5) {
                 "span",
                 { className: "datasetListItemSpan datasetListItemLink", onClick: function onClick() {
                     _this9.viewDataset(dataset._id);
-                  } },
-                "View"
+                  }, "aria-label": "View Dataset" },
+                React.createElement("img", { src: "/assets/img/view_icon.svg", className: "vlIcon" })
               ),
               React.createElement(
                 "span",
                 { className: "datasetListItemSpan datasetListItemLink", onClick: function onClick() {
                     _this9.downloadDataset(dataset._id, dataset.datasetName);
-                  } },
-                "Download"
+                  }, "aria-label": "Download Dataset" },
+                React.createElement("img", { src: "/assets/img/download_icon.svg", className: "vlIcon" })
               ),
               React.createElement(
                 "span",
                 { className: "datasetListItemSpan datasetListItemLink", onClick: function onClick() {
                     _this9.removeDataset(dataset._id);
-                  } },
-                "Delete"
+                  }, "aria-label": "Delete Dataset" },
+                React.createElement("img", { src: "/assets/img/remove_icon.svg", className: "vlIcon" })
               )
             );
           })
@@ -519,7 +581,20 @@ var Analytics = function (_React$Component6) {
   _createClass(Analytics, [{
     key: "render",
     value: function render() {
-      return React.createElement("div", { id: "analyticsContainer" });
+      return React.createElement(
+        "div",
+        { id: "analyticsContainer" },
+        React.createElement(
+          "h2",
+          { id: "analyticsSubheading" },
+          "No analytics to display"
+        ),
+        React.createElement(
+          "span",
+          { id: "analyticsDesc" },
+          "Analytics will be coming as a premium feature in future releases of dynalytic."
+        )
+      );
     }
   }]);
 

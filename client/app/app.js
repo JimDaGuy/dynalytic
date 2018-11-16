@@ -29,7 +29,8 @@ class WelcomeHome extends React.Component {
   render() {
     return (
       <div id="welcomeContainer">
-
+        <h2 id="welcomeSubheading">Welcome to dynalytic</h2>
+        <span id="welcomeDesc">Upload some data to get started!</span>
       </div>
     );
   }
@@ -87,7 +88,7 @@ class AddDataset extends React.Component {
 
   updateUpload() {
     const csvFile = $('#csvUpload')[0].files[0];
-    
+
     // If a file is uploaded add a different class to it, else remove it
     if (csvFile) {
       this.setState({ fileUploaded: true });
@@ -101,10 +102,10 @@ class AddDataset extends React.Component {
 
     return (
       <div id="addDataContainer">
-        <span id="addDataSubheading">Upload a CSV file, enter a dataset name, and click create!</span>
+        <h2 id="addDataSubheading">Upload a CSV file, enter a name, and click create!</h2>
         <label id="datasetNameLabel">Dataset Name:</label>
         <input id="datasetName" type="text" placeholder="Dataset name" />
-        <label id="csvUploadContainer" className={this.state.fileUploaded ? 'uploadedCSV': null} >
+        <label id="csvUploadContainer" className={this.state.fileUploaded ? 'uploadedCSV' : null} >
           <img id="csvUploadIcon" src="/assets/img/upload_icon.png" />
           <span id="csvUploadSpan">Upload</span>
           <input id="csvUpload" type="file" accept=".csv" onChange={this.updateUpload} />
@@ -204,8 +205,49 @@ class DatasetList extends React.Component {
       selectedID: '',
     };
 
+    this.componentDidUpdate = this.componentDidUpdate.bind(this);
     this.viewDataset = this.viewDataset.bind(this);
     this.unviewDataset = this.unviewDataset.bind(this);
+  }
+
+  componentDidUpdate() {
+    // Borrowed from https://stackoverflow.com/questions/11978995/how-to-change-color-of-svg-image-using-css-jquery-svg-image-replacement
+    $('img.vlIcon').each(function () {
+      console.dir('pfff');
+      var $img = $(this);
+      var imgID = $img.attr('id');
+      var imgClass = $img.attr('class');
+      var imgURL = $img.attr('src');
+
+      $.get(imgURL, function (data) {
+        // Get the SVG tag, ignore the rest
+        var $svg = $(data).find('svg');
+
+        // Add replaced image's ID to the new SVG
+        if (typeof imgID !== 'undefined') {
+          $svg = $svg.attr('id', imgID);
+        }
+        // Add replaced image's classes to the new SVG
+        if (typeof imgClass !== 'undefined') {
+          $svg = $svg.attr('class', imgClass + ' replaced-svg');
+        }
+
+        // Remove any invalid XML tags as per http://validator.w3.org
+        $svg = $svg.removeAttr('xmlns:a');
+
+        // Check if the viewport is set, if the viewport is not set the SVG wont't scale.
+        if (!$svg.attr('viewBox') && $svg.attr('height') && $svg.attr('width')) {
+          $svg.attr('viewBox', '0 0 ' + $svg.attr('height') + ' ' + $svg.attr('width'))
+        }
+
+        // Replace image with new SVG
+        $img.replaceWith($svg);
+
+      }, 'xml');
+
+    });
+
+    // this.forceUpdate();
   }
 
   viewDataset(id) {
@@ -263,14 +305,29 @@ class DatasetList extends React.Component {
         {viewing ?
           <ViewedDataset datasetID={this.state.selectedID} unviewDataset={this.unviewDataset} />
           :
-          <div>
+          <div id="datasetListView">
+            {userDatasets.length < 1 && 
+              <div id="noDatasetsContainer">
+                <h2 id="noDatasetsMessage">No datasets yet. Start uploading some data!</h2>
+              </div>
+            }
             {userDatasets.map((dataset) => {
               return <div className="datasetListItem">
-                <span className="datasetListItemSpan datasetListItemName">{dataset.datasetName}</span>
-                <span className="datasetListItemSpan datasetListItemDate">Last edited: {new Date(dataset.lastEdited).toDateString()}</span>
-                <span className="datasetListItemSpan datasetListItemLink" onClick={() => { this.viewDataset(dataset._id) }}>View</span>
-                <span className="datasetListItemSpan datasetListItemLink" onClick={() => { this.downloadDataset(dataset._id, dataset.datasetName) }}>Download</span>
-                <span className="datasetListItemSpan datasetListItemLink" onClick={() => { this.removeDataset(dataset._id) }}>Delete</span>
+                <span className="datasetListItemSpan datasetListItemName">
+                  {dataset.datasetName}
+                </span>
+                <span className="datasetListItemSpan datasetListItemDate">
+                  Last edited: {new Date(dataset.lastEdited).toDateString()}
+                </span>
+                <span className="datasetListItemSpan datasetListItemLink" onClick={() => { this.viewDataset(dataset._id) }} aria-label="View Dataset" >
+                  <img src="/assets/img/view_icon.svg" className="vlIcon" />
+                </span>
+                <span className="datasetListItemSpan datasetListItemLink" onClick={() => { this.downloadDataset(dataset._id, dataset.datasetName) }} aria-label="Download Dataset" >
+                  <img src="/assets/img/download_icon.svg" className="vlIcon" />
+                </span>
+                <span className="datasetListItemSpan datasetListItemLink" onClick={() => { this.removeDataset(dataset._id) }} aria-label="Delete Dataset" >
+                  <img src="/assets/img/remove_icon.svg" className="vlIcon" />
+                </span>
               </div>;
             })}
           </div>
@@ -292,7 +349,11 @@ class Analytics extends React.Component {
   render() {
     return (
       <div id="analyticsContainer">
-
+        <h2 id="analyticsSubheading">No analytics to display</h2>
+        <span id="analyticsDesc">
+          Analytics will be coming as a premium feature
+          in future releases of dynalytic.
+        </span>
       </div>
     );
   }

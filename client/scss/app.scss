@@ -107,29 +107,38 @@ html, body {
     }
 
     #welcomeContainer {
-      width: 90%;
+      width: calc(90% - 30px);
       margin: 0 auto;
-      height: 80%;
-      background-color: rgb(0, 0, 0);
+      padding: 15px;
+      height: calc(80% - 30px);
       border-radius: 5px;
+      background-color: pink;
+
+      #welcomeSubheading {
+        color: white;
+        margin: 0;
+      }
+
+      #welcomeDesc {
+        color: white;
+      }
     }
 
     #addDataContainer {
-      width: 90%;
+      width: calc(90% - 30px);
       margin: 0 auto;
-      height: 80%;
+      height: calc(80% - 30px);
+      padding: 15px;
       background-color: pink;
       border-radius: 5px;
 
       #addDataSubheading {
-        line-height: 20px;
-        margin: 10px;
         color: white;
+        margin: 0 0 5px 0;
         font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
       }
 
       #datasetNameLabel {
-        margin: 10px;
         float: left;
         color: white;
         font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
@@ -137,15 +146,14 @@ html, body {
       }
 
       #datasetName {
-        margin: 10px;
         float: left;
+        margin-left: 15px;
         clear: right;
       }
 
       #csvUploadContainer {
         overflow: hidden;
         position: relative;
-        margin: 10px;
 
         background: orange;
         border-radius: 5px;
@@ -200,6 +208,24 @@ html, body {
       border-radius: 5px;
       overflow: scroll;
       background-color: pink;
+
+      #datasetListView {
+        width: 100%;
+        height: 100%;
+      }
+
+      #noDatasetsContainer {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+
+        #noDatasetsMessage {
+          margin: 0;
+          padding-top: 20%;
+          text-align: center;
+          color: white;
+        }
+      }
 
       #datasetViewContainer {
         #datasetViewHeader {
@@ -256,19 +282,33 @@ html, body {
         overflow: hidden;
         line-height: 15px;
 
+        .datasetListItemName {
+          width: 30%;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
         .datasetListItemSpan {
           float: left;
           margin: 10px 10px;
         }
 
-        .datasetListItemLink {
-          color: rgb(89, 196, 238);
-          font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        .vlIcon {
+          width: 15px;
+          height: 15px;
+
+          path {
+            fill: rgb(89, 196, 238);
+          }
         }
 
-        .datasetListItemLink:hover {
-          color: #d16d9f;
+        .vlIcon:hover {
           cursor: pointer;
+
+          path {
+            fill: #d16d9f;
+          }
         }
       }
     }
@@ -291,11 +331,21 @@ html, body {
     }
 
     #analyticsContainer {
-      width: 90%;
+      width: calc(90% - 30px);
       margin: 0 auto;
-      height: 80%;
-      background-color: rgb(0, 0, 0);
+      padding: 15px;
+      height: calc(80% - 30px);
       border-radius: 5px;
+      background-color: pink;
+
+      #analyticsSubheading {
+        color: white;
+        margin: 0;
+      }
+
+      #analyticsDesc {
+        color: white;
+      }
     }
   }
 }

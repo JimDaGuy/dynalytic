@@ -79,36 +79,40 @@ html, body {
       color: white;
       font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; }
     #dashboard .selectedDashboardPage #welcomeContainer {
-      width: 90%;
+      width: calc(90% - 30px);
       margin: 0 auto;
-      height: 80%;
-      background-color: black;
-      border-radius: 5px; }
+      padding: 15px;
+      height: calc(80% - 30px);
+      border-radius: 5px;
+      background-color: pink; }
+      #dashboard .selectedDashboardPage #welcomeContainer #welcomeSubheading {
+        color: white;
+        margin: 0; }
+      #dashboard .selectedDashboardPage #welcomeContainer #welcomeDesc {
+        color: white; }
     #dashboard .selectedDashboardPage #addDataContainer {
-      width: 90%;
+      width: calc(90% - 30px);
       margin: 0 auto;
-      height: 80%;
+      height: calc(80% - 30px);
+      padding: 15px;
       background-color: pink;
       border-radius: 5px; }
       #dashboard .selectedDashboardPage #addDataContainer #addDataSubheading {
-        line-height: 20px;
-        margin: 10px;
         color: white;
+        margin: 0 0 5px 0;
         font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; }
       #dashboard .selectedDashboardPage #addDataContainer #datasetNameLabel {
-        margin: 10px;
         float: left;
         color: white;
         font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
         font-weight: bold; }
       #dashboard .selectedDashboardPage #addDataContainer #datasetName {
-        margin: 10px;
         float: left;
+        margin-left: 15px;
         clear: right; }
       #dashboard .selectedDashboardPage #addDataContainer #csvUploadContainer {
         overflow: hidden;
         position: relative;
-        margin: 10px;
         background: orange;
         border-radius: 5px;
         float: left;
@@ -147,6 +151,18 @@ html, body {
       border-radius: 5px;
       overflow: scroll;
       background-color: pink; }
+      #dashboard .selectedDashboardPage #datasetListContainer #datasetListView {
+        width: 100%;
+        height: 100%; }
+      #dashboard .selectedDashboardPage #datasetListContainer #noDatasetsContainer {
+        width: 100%;
+        height: 100%;
+        margin: 0; }
+        #dashboard .selectedDashboardPage #datasetListContainer #noDatasetsContainer #noDatasetsMessage {
+          margin: 0;
+          padding-top: 20%;
+          text-align: center;
+          color: white; }
       #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer #datasetViewHeader {
         min-width: calc(100% - 20px);
         height: 25px;
@@ -187,15 +203,23 @@ html, body {
         background-color: pink;
         overflow: hidden;
         line-height: 15px; }
+        #dashboard .selectedDashboardPage #datasetListContainer .datasetListItem .datasetListItemName {
+          width: 30%;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis; }
         #dashboard .selectedDashboardPage #datasetListContainer .datasetListItem .datasetListItemSpan {
           float: left;
           margin: 10px 10px; }
-        #dashboard .selectedDashboardPage #datasetListContainer .datasetListItem .datasetListItemLink {
-          color: #59c4ee;
-          font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; }
-        #dashboard .selectedDashboardPage #datasetListContainer .datasetListItem .datasetListItemLink:hover {
-          color: #d16d9f;
+        #dashboard .selectedDashboardPage #datasetListContainer .datasetListItem .vlIcon {
+          width: 15px;
+          height: 15px; }
+          #dashboard .selectedDashboardPage #datasetListContainer .datasetListItem .vlIcon path {
+            fill: #59c4ee; }
+        #dashboard .selectedDashboardPage #datasetListContainer .datasetListItem .vlIcon:hover {
           cursor: pointer; }
+          #dashboard .selectedDashboardPage #datasetListContainer .datasetListItem .vlIcon:hover path {
+            fill: #d16d9f; }
     #dashboard .selectedDashboardPage #datasetListContainer::-webkit-scrollbar-track {
       -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
       background-color: #0e0a0a; }
@@ -205,11 +229,17 @@ html, body {
     #dashboard .selectedDashboardPage #datasetListContainer::-webkit-scrollbar-thumb {
       background-color: #d16d9f; }
     #dashboard .selectedDashboardPage #analyticsContainer {
-      width: 90%;
+      width: calc(90% - 30px);
       margin: 0 auto;
-      height: 80%;
-      background-color: black;
-      border-radius: 5px; }
+      padding: 15px;
+      height: calc(80% - 30px);
+      border-radius: 5px;
+      background-color: pink; }
+      #dashboard .selectedDashboardPage #analyticsContainer #analyticsSubheading {
+        color: white;
+        margin: 0; }
+      #dashboard .selectedDashboardPage #analyticsContainer #analyticsDesc {
+        color: white; }
 
 #footer {
   background-color: black;
