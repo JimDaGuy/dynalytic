@@ -144,7 +144,6 @@ class ViewedDataset extends React.Component {
       success: (response) => {
         response = JSON.parse(response);
         const dataset = response.dataset;
-        console.dir(dataset);
         this.setState({
           datasetName: dataset.datasetName,
           columns: dataset.columns,
@@ -213,7 +212,6 @@ class DatasetList extends React.Component {
   componentDidUpdate() {
     // Borrowed from https://stackoverflow.com/questions/11978995/how-to-change-color-of-svg-image-using-css-jquery-svg-image-replacement
     $('img.vlIcon').each(function () {
-      console.dir('pfff');
       var $img = $(this);
       var imgID = $img.attr('id');
       var imgClass = $img.attr('class');
@@ -292,8 +290,6 @@ class DatasetList extends React.Component {
         this.props.getUserDatasets();
       },
     });
-
-    console.dir(result);
   }
 
   render() {

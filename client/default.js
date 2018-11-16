@@ -52,6 +52,8 @@ class Form extends React.Component {
       signUpUsername: '',
       signUpPassword: '',
       signUpPasswordSecondary: '',
+      loginErrorMessage: '',
+      signUpErrorMessage: '',
     }
 
     this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
@@ -62,18 +64,25 @@ class Form extends React.Component {
     this.handleSignUpUsernameChange = this.handleSignUpUsernameChange.bind(this);
     this.handleSignUpPasswordChange = this.handleSignUpPasswordChange.bind(this);
     this.handleSignUpPasswordSecondaryChange = this.handleSignUpPasswordSecondaryChange.bind(this);
+  
+    this.displayLoginError = this.displayLoginError.bind(this);
+    this.displaySignupError = this.displaySignupError.bind(this);
   }
 
   handleLoginSubmit(e) {
     e.preventDefault();
 
     if (this.state.loginUsername == '' || this.state.loginPassword == '') {
-      console.log("Login fields required");
-      // handleError("RAWR! Username or password is empty");
+      this.displayLoginError('Enter a username and password');
       return false;
     }
 
-    sendAjax('POST', $("#loginForm").attr("action"), $("#loginForm").serialize(), redirect);
+    this.sendAjaxDisplayError('POST', $("#loginForm").attr("action"), $("#loginForm").serialize(), redirect,
+      (xhr, status, error) => {
+        const messageObj = JSON.parse(xhr.responseText);
+        this.displayLoginError(messageObj.error);
+      }
+    );
 
     return false;
   }
@@ -82,20 +91,35 @@ class Form extends React.Component {
     e.preventDefault();
 
     if (this.state.signUpUsername == '' || this.state.signUpPassword == '' || this.state.signUpPasswordSecondary == '') {
-      console.log("Fields required");
-      // handleError("RAWR: All fields are required");
+      this.displaySignupError('All fields are required for signing up.');
       return false;
     }
 
     if (this.state.signUpPassword !== this.state.signUpPasswordSecondary) {
-      console.log("Pw dont match");
-      // handleError("RAWR! Passwords do not match");
+      this.displaySignupError('The passwords entered do not match.');
       return false;
     }
 
-    sendAjax('POST', $("#signupForm").attr("action"), $("#signupForm").serialize(), redirect);
+    this.sendAjaxDisplayError('POST', $("#signupForm").attr("action"), $("#signupForm").serialize(), redirect,
+      (xhr, status, error) => {
+        const messageObj = JSON.parse(xhr.responseText);
+        this.displaySignupError(messageObj.error);
+      }
+    );
 
     return false;
+  }
+
+  sendAjaxDisplayError(type, action, data, success, error) {
+    $.ajax({
+      cache: false,
+      type,
+      url: action,
+      data,
+      dataType: "json",
+      success,
+      error,
+    });
   }
 
   handleLoginUsernameChange(e) {
@@ -128,6 +152,18 @@ class Form extends React.Component {
     });
   }
 
+  displayLoginError(message) {
+    this.setState({
+      loginErrorMessage: message,
+    });
+  }
+
+  displaySignupError(message) {
+    this.setState({
+      signUpErrorMessage: message,
+    })
+  }
+
   render() {
     const loggingIn = this.props.loggingIn;
     const signingUp = this.props.signingUp;
@@ -140,7 +176,7 @@ class Form extends React.Component {
     const signUpUsername = this.state.signUpUsername;
     const signUpPassword = this.state.signUpPassword;
     const signUpPasswordSecondary = this.state.signUpPasswordSecondary;
-
+   
     let form;
 
     if (loggingIn) {
@@ -154,12 +190,23 @@ class Form extends React.Component {
             className="mainForm"
             onClick={stopPropagation}
           >
-            <label htmlFor="username">Username: </label>
-            <input id="user" type="text" name="username" placeholder="username" value={loginUsername} onChange={this.handleLoginUsernameChange} />
-            <label htmlFor="pass">Password: </label>
-            <input id="pass" type="password" name="pass" placeholder="password" value={loginPassword} onChange={this.handleLoginPasswordChange} />
+            <p class="clearfix">
+              <label htmlFor="username">Username: </label>
+              <input id="user" type="text" name="username" placeholder="username" value={loginUsername} onChange={this.handleLoginUsernameChange} />
+            </p>
+            <p class="clearfix">
+              <label htmlFor="pass">Password: </label>
+              <input id="pass" type="password" name="pass" placeholder="password" value={loginPassword} onChange={this.handleLoginPasswordChange} />
+            </p>            
             <input type="hidden" name="_csrf" value={csrf} />
-            <input className="formSubmit" type="submit" value="Sign In" />
+            <p class="clearfix">
+              <input className="formSubmit" type="submit" value="Sign In" />
+            </p>
+            <p class="clearfix">
+              {this.state.loginErrorMessage !== '' &&
+                <div className="errorBox">{this.state.loginErrorMessage}</div>
+              }
+            </p>
           </form>
         </div>;
     } else if (signingUp) {
@@ -173,14 +220,27 @@ class Form extends React.Component {
             className="mainForm"
             onClick={stopPropagation}
           >
-            <label htmlFor="username">Username: </label>
-            <input id="user" type="text" name="username" placeholder="username" value={signUpUsername} onChange={this.handleSignUpUsernameChange} />
-            <label htmlFor="pass">Password: </label>
-            <input id="pass" type="password" name="pass" placeholder="password" value={signUpPassword} onChange={this.handleSignUpPasswordChange} />
-            <label htmlFor="pass2">Password: </label>
-            <input id="pass2" type="password" name="pass2" placeholder="retype password" value={signUpPasswordSecondary} onChange={this.handleSignUpPasswordSecondaryChange} />
+            <p class="clearfix">
+              <label htmlFor="username">Username: </label>
+              <input id="user" type="text" name="username" placeholder="username" value={signUpUsername} onChange={this.handleSignUpUsernameChange} />
+            </p>
+            <p class="clearfix">
+              <label htmlFor="pass">Password: </label>
+              <input id="pass" type="password" name="pass" placeholder="password" value={signUpPassword} onChange={this.handleSignUpPasswordChange} />
+            </p>
+            <p class="clearfix">
+              <label htmlFor="pass2">Password: </label>
+              <input id="pass2" type="password" name="pass2" placeholder="retype password" value={signUpPasswordSecondary} onChange={this.handleSignUpPasswordSecondaryChange} />
+            </p>
             <input type="hidden" name="_csrf" value={csrf} />
-            <input className="formSubmit" type="submit" value="Sign Up" />
+            <p class="clearfix">
+              <input className="formSubmit" type="submit" value="Sign Up" />
+            </p>
+            <p class="clearfix">
+              {this.state.signUpErrorMessage !== '' &&
+                <div className="errorBox">{this.state.signUpErrorMessage}</div>
+              }
+            </p>
           </form>
         </div>;
     }

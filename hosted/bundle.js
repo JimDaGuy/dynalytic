@@ -100,7 +100,9 @@ var Form = function (_React$Component3) {
       loginPassword: '',
       signUpUsername: '',
       signUpPassword: '',
-      signUpPasswordSecondary: ''
+      signUpPasswordSecondary: '',
+      loginErrorMessage: '',
+      signUpErrorMessage: ''
     };
 
     _this3.handleLoginSubmit = _this3.handleLoginSubmit.bind(_this3);
@@ -111,44 +113,67 @@ var Form = function (_React$Component3) {
     _this3.handleSignUpUsernameChange = _this3.handleSignUpUsernameChange.bind(_this3);
     _this3.handleSignUpPasswordChange = _this3.handleSignUpPasswordChange.bind(_this3);
     _this3.handleSignUpPasswordSecondaryChange = _this3.handleSignUpPasswordSecondaryChange.bind(_this3);
+
+    _this3.displayLoginError = _this3.displayLoginError.bind(_this3);
+    _this3.displaySignupError = _this3.displaySignupError.bind(_this3);
     return _this3;
   }
 
   _createClass(Form, [{
     key: "handleLoginSubmit",
     value: function handleLoginSubmit(e) {
+      var _this4 = this;
+
       e.preventDefault();
 
       if (this.state.loginUsername == '' || this.state.loginPassword == '') {
-        console.log("Login fields required");
-        // handleError("RAWR! Username or password is empty");
+        this.displayLoginError('Enter a username and password');
         return false;
       }
 
-      sendAjax('POST', $("#loginForm").attr("action"), $("#loginForm").serialize(), redirect);
+      this.sendAjaxDisplayError('POST', $("#loginForm").attr("action"), $("#loginForm").serialize(), redirect, function (xhr, status, error) {
+        var messageObj = JSON.parse(xhr.responseText);
+        _this4.displayLoginError(messageObj.error);
+      });
 
       return false;
     }
   }, {
     key: "handleSignUpSubmit",
     value: function handleSignUpSubmit(e) {
+      var _this5 = this;
+
       e.preventDefault();
 
       if (this.state.signUpUsername == '' || this.state.signUpPassword == '' || this.state.signUpPasswordSecondary == '') {
-        console.log("Fields required");
-        // handleError("RAWR: All fields are required");
+        this.displaySignupError('All fields are required for signing up.');
         return false;
       }
 
       if (this.state.signUpPassword !== this.state.signUpPasswordSecondary) {
-        console.log("Pw dont match");
-        // handleError("RAWR! Passwords do not match");
+        this.displaySignupError('The passwords entered do not match.');
         return false;
       }
 
-      sendAjax('POST', $("#signupForm").attr("action"), $("#signupForm").serialize(), redirect);
+      this.sendAjaxDisplayError('POST', $("#signupForm").attr("action"), $("#signupForm").serialize(), redirect, function (xhr, status, error) {
+        var messageObj = JSON.parse(xhr.responseText);
+        _this5.displaySignupError(messageObj.error);
+      });
 
       return false;
+    }
+  }, {
+    key: "sendAjaxDisplayError",
+    value: function sendAjaxDisplayError(type, action, data, success, error) {
+      $.ajax({
+        cache: false,
+        type: type,
+        url: action,
+        data: data,
+        dataType: "json",
+        success: success,
+        error: error
+      });
     }
   }, {
     key: "handleLoginUsernameChange",
@@ -186,6 +211,20 @@ var Form = function (_React$Component3) {
       });
     }
   }, {
+    key: "displayLoginError",
+    value: function displayLoginError(message) {
+      this.setState({
+        loginErrorMessage: message
+      });
+    }
+  }, {
+    key: "displaySignupError",
+    value: function displaySignupError(message) {
+      this.setState({
+        signUpErrorMessage: message
+      });
+    }
+  }, {
     key: "render",
     value: function render() {
       var loggingIn = this.props.loggingIn;
@@ -217,19 +256,40 @@ var Form = function (_React$Component3) {
               onClick: stopPropagation
             },
             React.createElement(
-              "label",
-              { htmlFor: "username" },
-              "Username: "
+              "p",
+              { "class": "clearfix" },
+              React.createElement(
+                "label",
+                { htmlFor: "username" },
+                "Username: "
+              ),
+              React.createElement("input", { id: "user", type: "text", name: "username", placeholder: "username", value: loginUsername, onChange: this.handleLoginUsernameChange })
             ),
-            React.createElement("input", { id: "user", type: "text", name: "username", placeholder: "username", value: loginUsername, onChange: this.handleLoginUsernameChange }),
             React.createElement(
-              "label",
-              { htmlFor: "pass" },
-              "Password: "
+              "p",
+              { "class": "clearfix" },
+              React.createElement(
+                "label",
+                { htmlFor: "pass" },
+                "Password: "
+              ),
+              React.createElement("input", { id: "pass", type: "password", name: "pass", placeholder: "password", value: loginPassword, onChange: this.handleLoginPasswordChange })
             ),
-            React.createElement("input", { id: "pass", type: "password", name: "pass", placeholder: "password", value: loginPassword, onChange: this.handleLoginPasswordChange }),
             React.createElement("input", { type: "hidden", name: "_csrf", value: csrf }),
-            React.createElement("input", { className: "formSubmit", type: "submit", value: "Sign In" })
+            React.createElement(
+              "p",
+              { "class": "clearfix" },
+              React.createElement("input", { className: "formSubmit", type: "submit", value: "Sign In" })
+            ),
+            React.createElement(
+              "p",
+              { "class": "clearfix" },
+              this.state.loginErrorMessage !== '' && React.createElement(
+                "div",
+                { className: "errorBox" },
+                this.state.loginErrorMessage
+              )
+            )
           )
         );
       } else if (signingUp) {
@@ -247,25 +307,50 @@ var Form = function (_React$Component3) {
               onClick: stopPropagation
             },
             React.createElement(
-              "label",
-              { htmlFor: "username" },
-              "Username: "
+              "p",
+              { "class": "clearfix" },
+              React.createElement(
+                "label",
+                { htmlFor: "username" },
+                "Username: "
+              ),
+              React.createElement("input", { id: "user", type: "text", name: "username", placeholder: "username", value: signUpUsername, onChange: this.handleSignUpUsernameChange })
             ),
-            React.createElement("input", { id: "user", type: "text", name: "username", placeholder: "username", value: signUpUsername, onChange: this.handleSignUpUsernameChange }),
             React.createElement(
-              "label",
-              { htmlFor: "pass" },
-              "Password: "
+              "p",
+              { "class": "clearfix" },
+              React.createElement(
+                "label",
+                { htmlFor: "pass" },
+                "Password: "
+              ),
+              React.createElement("input", { id: "pass", type: "password", name: "pass", placeholder: "password", value: signUpPassword, onChange: this.handleSignUpPasswordChange })
             ),
-            React.createElement("input", { id: "pass", type: "password", name: "pass", placeholder: "password", value: signUpPassword, onChange: this.handleSignUpPasswordChange }),
             React.createElement(
-              "label",
-              { htmlFor: "pass2" },
-              "Password: "
+              "p",
+              { "class": "clearfix" },
+              React.createElement(
+                "label",
+                { htmlFor: "pass2" },
+                "Password: "
+              ),
+              React.createElement("input", { id: "pass2", type: "password", name: "pass2", placeholder: "retype password", value: signUpPasswordSecondary, onChange: this.handleSignUpPasswordSecondaryChange })
             ),
-            React.createElement("input", { id: "pass2", type: "password", name: "pass2", placeholder: "retype password", value: signUpPasswordSecondary, onChange: this.handleSignUpPasswordSecondaryChange }),
             React.createElement("input", { type: "hidden", name: "_csrf", value: csrf }),
-            React.createElement("input", { className: "formSubmit", type: "submit", value: "Sign Up" })
+            React.createElement(
+              "p",
+              { "class": "clearfix" },
+              React.createElement("input", { className: "formSubmit", type: "submit", value: "Sign Up" })
+            ),
+            React.createElement(
+              "p",
+              { "class": "clearfix" },
+              this.state.signUpErrorMessage !== '' && React.createElement(
+                "div",
+                { className: "errorBox" },
+                this.state.signUpErrorMessage
+              )
+            )
           )
         );
       }
@@ -287,17 +372,17 @@ var Page = function (_React$Component4) {
   function Page(props) {
     _classCallCheck(this, Page);
 
-    var _this4 = _possibleConstructorReturn(this, (Page.__proto__ || Object.getPrototypeOf(Page)).call(this, props));
+    var _this6 = _possibleConstructorReturn(this, (Page.__proto__ || Object.getPrototypeOf(Page)).call(this, props));
 
-    _this4.state = {
+    _this6.state = {
       loggingIn: false,
       signingUp: false
     };
 
-    _this4.handleSignInClick = _this4.handleSignInClick.bind(_this4);
-    _this4.handleSignUpClick = _this4.handleSignUpClick.bind(_this4);
-    _this4.handleOverlayClick = _this4.handleOverlayClick.bind(_this4);
-    return _this4;
+    _this6.handleSignInClick = _this6.handleSignInClick.bind(_this6);
+    _this6.handleSignUpClick = _this6.handleSignUpClick.bind(_this6);
+    _this6.handleOverlayClick = _this6.handleOverlayClick.bind(_this6);
+    return _this6;
   }
 
   _createClass(Page, [{

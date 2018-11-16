@@ -239,7 +239,6 @@ var ViewedDataset = function (_React$Component4) {
                   success: function success(response) {
                     response = JSON.parse(response);
                     var dataset = response.dataset;
-                    console.dir(dataset);
                     _this6.setState({
                       datasetName: dataset.datasetName,
                       columns: dataset.columns,
@@ -360,7 +359,6 @@ var DatasetList = function (_React$Component5) {
     value: function componentDidUpdate() {
       // Borrowed from https://stackoverflow.com/questions/11978995/how-to-change-color-of-svg-image-using-css-jquery-svg-image-replacement
       $('img.vlIcon').each(function () {
-        console.dir('pfff');
         var $img = $(this);
         var imgID = $img.attr('id');
         var imgClass = $img.attr('class');
@@ -480,10 +478,7 @@ var DatasetList = function (_React$Component5) {
               case 2:
                 result = _context3.sent;
 
-
-                console.dir(result);
-
-              case 4:
+              case 3:
               case "end":
                 return _context3.stop();
             }

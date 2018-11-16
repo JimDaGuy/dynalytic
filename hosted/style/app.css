@@ -99,8 +99,7 @@ html, body {
       border-radius: 5px; }
       #dashboard .selectedDashboardPage #addDataContainer #addDataSubheading {
         color: white;
-        margin: 0 0 5px 0;
-        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; }
+        margin: 0 0 5px 0; }
       #dashboard .selectedDashboardPage #addDataContainer #datasetNameLabel {
         float: left;
         color: white;
