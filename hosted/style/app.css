@@ -143,6 +143,20 @@ html, body {
         margin: 10px;
         float: left;
         clear: both; }
+      #dashboard .selectedDashboardPage #addDataContainer #statusBoxContainer {
+        width: 100%;
+        height: 40px;
+        float: left; }
+        #dashboard .selectedDashboardPage #addDataContainer #statusBoxContainer .addStatusBox {
+          width: calc(100% - 10px);
+          height: 30px;
+          line-height: 30px;
+          padding: 5px;
+          border-radius: 5px; }
+        #dashboard .selectedDashboardPage #addDataContainer #statusBoxContainer .successAdd {
+          background-color: lightgreen; }
+        #dashboard .selectedDashboardPage #addDataContainer #statusBoxContainer .errorAdd {
+          background-color: red; }
     #dashboard .selectedDashboardPage #datasetListContainer {
       width: 90%;
       margin: 0 auto;

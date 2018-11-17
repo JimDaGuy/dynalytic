@@ -1,13 +1,13 @@
 // Main app page
 // Page for main application
+
+
 class Header extends React.Component {
   constructor(props) {
     super(props);
   }
 
   render() {
-    const handleLogoutClick = this.props.handleLogoutClick;
-
     return (
       <div id="header">
         <a href="/app" className="headerProjectName">dynalytic</a>
@@ -42,24 +42,35 @@ class AddDataset extends React.Component {
 
     this.state = {
       fileUploaded: false,
+      createMessage: '',
+      error: false,
     };
 
     this.updateUpload = this.updateUpload.bind(this);
+    this.submitCSV = this.submitCSV.bind(this);
   }
 
+  // submitCSV:
+  // - Grab file from file input, convert it to json, send it to the server
+  // //////////////////////////////
   submitCSV(csrf) {
     const csvFile = $('#csvUpload')[0].files[0];
     const datasetName = $('#datasetName')[0].value;
 
+    // Check that the user has uploaded a CSV
     if (!csvFile) {
-      console.dir('No file selected');
-      // Throw clientside error 'No file selected'
+      this.setState({
+        createMessage: 'No file selected',
+        error: true,
+      });
       return;
     }
 
+    // Read in the CSV file
     let reader = new FileReader();
     reader.readAsText(csvFile);
     reader.onload = (e) => {
+      // Convert CSV to JSON object with JQuery CSV
       const csv = e.target.result;
       const data = $.csv.toObjects(csv);
 
@@ -75,17 +86,26 @@ class AddDataset extends React.Component {
           csvData: data,
           datasetName,
         },
-        success: () => {
+        success: (result) => {
           $('#csvButton').removeAttr('disabled');
-          // Update screen to reflect upload status
+          this.setState({
+            createMessage: result.message,
+            error: false,
+          });
         },
-      }).error(() => {
+      }).error((err) => {
         $('#csvButton').removeAttr('disabled');
-        // Update screen to reflect upload status
+        this.setState({
+          createMessage: err.responseJSON.error,
+          error: true,
+        });
       });
     };
   };
 
+  // updateUpload:
+  // - Change appearance of upload button when a file is uploaded
+  // //////////////////////////////
   updateUpload() {
     const csvFile = $('#csvUpload')[0].files[0];
 
@@ -99,6 +119,8 @@ class AddDataset extends React.Component {
 
   render() {
     const csrf = this.props.csrf;
+    const createMessage = this.state.createMessage;
+    const error = this.state.error;
 
     return (
       <div id="addDataContainer">
@@ -111,6 +133,15 @@ class AddDataset extends React.Component {
           <input id="csvUpload" type="file" accept=".csv" onChange={this.updateUpload} />
         </label>
         <button id='csvButton' type="button" onClick={() => this.submitCSV(csrf)}>Create Dataset</button>
+        {createMessage !== '' &&
+          <div id="statusBoxContainer">
+            {!error ?
+              <div className="addStatusBox successAdd" >{createMessage}</div>
+              :
+              <div className="addStatusBox errorAdd" >{createMessage}</div>
+            }
+          </div>
+        }
       </div>
     );
   }
@@ -134,6 +165,9 @@ class ViewedDataset extends React.Component {
     this.getDatasetInfo();
   }
 
+  // getDatasetInfo:
+  // - Request dataset from the server
+  // //////////////////////////////
   async getDatasetInfo() {
     await $.ajax({
       type: "GET",
@@ -158,7 +192,6 @@ class ViewedDataset extends React.Component {
   }
 
   render() {
-    const datasetID = this.props.datasetID;
     const unviewDataset = this.props.unviewDataset;
 
     const datasetName = this.state.datasetName;
@@ -209,6 +242,9 @@ class DatasetList extends React.Component {
     this.unviewDataset = this.unviewDataset.bind(this);
   }
 
+  // componentDidMount:
+  // - Apply styles to the img svg's that can only be done in code after the elements are rendered
+  // //////////////////////////////
   componentDidUpdate() {
     // Borrowed from https://stackoverflow.com/questions/11978995/how-to-change-color-of-svg-image-using-css-jquery-svg-image-replacement
     $('img.vlIcon').each(function () {
@@ -244,8 +280,6 @@ class DatasetList extends React.Component {
       }, 'xml');
 
     });
-
-    // this.forceUpdate();
   }
 
   viewDataset(id) {
@@ -256,6 +290,9 @@ class DatasetList extends React.Component {
     this.setState({ selectedID: '' });
   }
 
+  // downloadDataset:
+  // - Retrieve CSV string from server and download the dataset as a CSV
+  // //////////////////////////////
   async downloadDataset(id, datasetName) {
     const result = await $.ajax({
       type: "GET",
@@ -278,8 +315,11 @@ class DatasetList extends React.Component {
     document.body.removeChild(element);
   }
 
+  // removeDataset:
+  // - Attempt to remove dataset from the database
+  // //////////////////////////////
   async removeDataset(id) {
-    const result = await $.ajax({
+    await $.ajax({
       type: 'DELETE',
       url: '/removeDataset',
       data: {
@@ -302,7 +342,7 @@ class DatasetList extends React.Component {
           <ViewedDataset datasetID={this.state.selectedID} unviewDataset={this.unviewDataset} />
           :
           <div id="datasetListView">
-            {userDatasets.length < 1 && 
+            {userDatasets.length < 1 &&
               <div id="noDatasetsContainer">
                 <h2 id="noDatasetsMessage">No datasets yet. Start uploading some data!</h2>
               </div>
@@ -375,6 +415,9 @@ class Content extends React.Component {
     }
   }
 
+  // getUserDatasets:
+  // - Load list of the user's datasets
+  // //////////////////////////////
   async getUserDatasets() {
     await $.ajax({
       type: "GET",
@@ -478,7 +521,7 @@ class Page extends React.Component {
 
     return (
       <div id="page">
-        <Header handleLogoutClick={this.handleLogoutClick} />
+        <Header />
         <Content csrf={csrf} />
         <div id="footer"></div>
       </div>
@@ -497,36 +540,6 @@ const renderPage = (csrf) => {
     <Page csrf={csrf} />,
     document.querySelector("#app")
   );
-};
-
-const submitCSV = () => {
-  console.dir('Pressed it');
-
-  let csvFile = $('#csvFile')[0].files[0];
-
-  if (!csvFile) {
-    console.dir('No file selected');
-    // Throw clientside error 'No file selected'
-    return;
-  }
-
-  //Disable submit button while submitting
-  $('#csvButton').attr('disabled', 'disabled');
-
-  //Parse CSV 
-  const csvJSON = parseCSVToJSON(csvFile);
-
-  //Send JSON to server
-  let xhr = new XMLHttpRequest();
-  xhr.onload = () => {
-    $('#csvButton').removeAttr('disabled');
-    // Update screen to reflect upload status
-    console.dir('Ayy lmao');
-  };
-
-  xhr.open('POST', '/upload');
-  xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-  xhr.send(JSON.stringify(csvJSON));
 };
 
 $(document).ready(() => {

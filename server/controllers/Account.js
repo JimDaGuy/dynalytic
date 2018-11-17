@@ -71,8 +71,53 @@ const signup = (request, response) => {
   });
 };
 
+// changePassword:
+// - Change a user's password
+// //////////////////////////////
+const changePassword = (request, response) => {
+  const req = request;
+  const res = response;
+
+  // Semi-santitize parameters
+  req.body.username = `${req.body.username}`;
+  req.body.pass = `${req.body.pass}`;
+  req.body.newpass1 = `${req.body.newpass1}`;
+  req.body.newpass2 = `${req.body.newpass2}`;
+
+  // Check for missing fields
+  if (!req.body.username || !req.body.pass || !req.body.newpass1 || !req.body.newpass2) {
+    return res.status(400).json({ error: 'All fields are required' });
+  }
+
+  // Check for non matching new password
+  if (req.body.newpass1 !== req.body.newpass2) {
+    return res.status(400).json({ error: 'New passwords do not match' });
+  }
+
+  // Authenticate with the current password
+  return Account.AccountModel.authenticate(req.body.username, req.body.pass, (err, account) => {
+    if (err || !account) {
+      return res.status(401).json({ error: 'Wrong username or password' });
+    }
+
+    // Generate a new hash and salt with the new password
+
+    return Account.AccountModel.generateHash(req.body.newpass1, (salt, hash) => {
+      // Change the user's salt and hash to the new salt and hash values
+      Account.AccountModel.changePassword(account, salt, hash, (err2) => {
+        if (err2) {
+          return res.status(401).json({ error: 'Error occured while changing password' });
+        }
+
+        return res.status(200).json({ message: 'Successfully changed password' });
+      });
+    });
+  });
+};
+
 module.exports = {
   login,
   logout,
   signup,
+  changePassword,
 };

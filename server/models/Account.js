@@ -47,6 +47,9 @@ const validatePassword = (doc, password, callback) => {
   });
 };
 
+// findByUsername:
+// - Return a user matching the passed in name
+// //////////////////////////////
 AccountSchema.statics.findByUsername = (name, callback) => {
   const search = {
     username: name,
@@ -64,23 +67,34 @@ AccountSchema.statics.generateHash = (password, callback) => {
 };
 
 AccountSchema.statics.authenticate = (username, password, callback) =>
-AccountModel.findByUsername(username, (err, doc) => {
-  if (err) {
-    return callback(err);
-  }
-
-  if (!doc) {
-    return callback();
-  }
-
-  return validatePassword(doc, password, (result) => {
-    if (result === true) {
-      return callback(null, doc);
+  AccountModel.findByUsername(username, (err, doc) => {
+    if (err) {
+      return callback(err);
     }
 
-    return callback();
+    if (!doc) {
+      return callback();
+    }
+
+    return validatePassword(doc, password, (result) => {
+      if (result === true) {
+        return callback(null, doc);
+      }
+
+      return callback();
+    });
   });
-});
+
+// changePassword:
+// - Change the salt and hash values of the passed in account
+// //////////////////////////////
+AccountSchema.statics.changePassword = (account, salt, hash, callback) => {
+  const newPass = { salt, password: hash };
+  const searchParams = { _id: account._id };
+
+  return AccountModel.findOneAndUpdate(searchParams, newPass, callback);
+};
+
 
 AccountModel = mongoose.model('Account', AccountSchema);
 

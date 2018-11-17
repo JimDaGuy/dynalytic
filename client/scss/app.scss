@@ -198,6 +198,28 @@ html, body {
         float: left;
         clear: both;
       }
+
+      #statusBoxContainer {
+        width: 100%;
+        height: 40px;
+        float: left;
+
+        .addStatusBox {
+          width: calc(100% - 10px);
+          height: 30px;
+          line-height: 30px;
+          padding: 5px;
+          border-radius: 5px;
+        }
+  
+        .successAdd {
+          background-color: lightgreen;
+        }
+  
+        .errorAdd {
+          background-color: red;
+        }
+      }
     }
 
     #datasetListContainer {

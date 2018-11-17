@@ -10,6 +10,8 @@ const router = (app) => {
   // Posts
   app.post('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.login);
   app.post('/signup', mid.requiresSecure, mid.requiresLogout, controllers.Account.signup);
+  app.post('/changePassword', mid.requiresSecure, mid.requiresLogout,
+  controllers.Account.changePassword);
 
   app.post('/upload', mid.requiresSecure, mid.requiresLogin, controllers.Dataset.uploadDataset);
 
@@ -27,6 +29,9 @@ const router = (app) => {
 
   // Security
   app.get('/getToken', mid.requiresSecure, controllers.Helper.getToken);
+
+  // Any not found pages redirect to landing
+  app.get('*', mid.requiresSecure, mid.requiresLogout, controllers.Pages.defaultPage);
 };
 
 module.exports = router;

@@ -12,6 +12,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 // Main app page
 // Page for main application
+
+
 var Header = function (_React$Component) {
   _inherits(Header, _React$Component);
 
@@ -24,8 +26,6 @@ var Header = function (_React$Component) {
   _createClass(Header, [{
     key: "render",
     value: function render() {
-      var handleLogoutClick = this.props.handleLogoutClick;
-
       return React.createElement(
         "div",
         { id: "header" },
@@ -90,28 +90,43 @@ var AddDataset = function (_React$Component3) {
     var _this3 = _possibleConstructorReturn(this, (AddDataset.__proto__ || Object.getPrototypeOf(AddDataset)).call(this, props));
 
     _this3.state = {
-      fileUploaded: false
+      fileUploaded: false,
+      createMessage: '',
+      error: false
     };
 
     _this3.updateUpload = _this3.updateUpload.bind(_this3);
+    _this3.submitCSV = _this3.submitCSV.bind(_this3);
     return _this3;
   }
+
+  // submitCSV:
+  // - Grab file from file input, convert it to json, send it to the server
+  // //////////////////////////////
+
 
   _createClass(AddDataset, [{
     key: "submitCSV",
     value: function submitCSV(csrf) {
+      var _this4 = this;
+
       var csvFile = $('#csvUpload')[0].files[0];
       var datasetName = $('#datasetName')[0].value;
 
+      // Check that the user has uploaded a CSV
       if (!csvFile) {
-        console.dir('No file selected');
-        // Throw clientside error 'No file selected'
+        this.setState({
+          createMessage: 'No file selected',
+          error: true
+        });
         return;
       }
 
+      // Read in the CSV file
       var reader = new FileReader();
       reader.readAsText(csvFile);
       reader.onload = function (e) {
+        // Convert CSV to JSON object with JQuery CSV
         var csv = e.target.result;
         var data = $.csv.toObjects(csv);
 
@@ -127,18 +142,29 @@ var AddDataset = function (_React$Component3) {
             csvData: data,
             datasetName: datasetName
           },
-          success: function success() {
+          success: function success(result) {
             $('#csvButton').removeAttr('disabled');
-            // Update screen to reflect upload status
+            _this4.setState({
+              createMessage: result.message,
+              error: false
+            });
           }
-        }).error(function () {
+        }).error(function (err) {
           $('#csvButton').removeAttr('disabled');
-          // Update screen to reflect upload status
+          _this4.setState({
+            createMessage: err.responseJSON.error,
+            error: true
+          });
         });
       };
     }
   }, {
     key: "updateUpload",
+
+
+    // updateUpload:
+    // - Change appearance of upload button when a file is uploaded
+    // //////////////////////////////
     value: function updateUpload() {
       var csvFile = $('#csvUpload')[0].files[0];
 
@@ -152,9 +178,11 @@ var AddDataset = function (_React$Component3) {
   }, {
     key: "render",
     value: function render() {
-      var _this4 = this;
+      var _this5 = this;
 
       var csrf = this.props.csrf;
+      var createMessage = this.state.createMessage;
+      var error = this.state.error;
 
       return React.createElement(
         "div",
@@ -184,9 +212,22 @@ var AddDataset = function (_React$Component3) {
         React.createElement(
           "button",
           { id: "csvButton", type: "button", onClick: function onClick() {
-              return _this4.submitCSV(csrf);
+              return _this5.submitCSV(csrf);
             } },
           "Create Dataset"
+        ),
+        createMessage !== '' && React.createElement(
+          "div",
+          { id: "statusBoxContainer" },
+          !error ? React.createElement(
+            "div",
+            { className: "addStatusBox successAdd" },
+            createMessage
+          ) : React.createElement(
+            "div",
+            { className: "addStatusBox errorAdd" },
+            createMessage
+          )
         )
       );
     }
@@ -201,17 +242,17 @@ var ViewedDataset = function (_React$Component4) {
   function ViewedDataset(props) {
     _classCallCheck(this, ViewedDataset);
 
-    var _this5 = _possibleConstructorReturn(this, (ViewedDataset.__proto__ || Object.getPrototypeOf(ViewedDataset)).call(this, props));
+    var _this6 = _possibleConstructorReturn(this, (ViewedDataset.__proto__ || Object.getPrototypeOf(ViewedDataset)).call(this, props));
 
-    _this5.state = {
+    _this6.state = {
       datasetName: '',
       columns: [],
       entries: [],
       loading: true
     };
 
-    _this5.getDatasetInfo = _this5.getDatasetInfo.bind(_this5);
-    return _this5;
+    _this6.getDatasetInfo = _this6.getDatasetInfo.bind(_this6);
+    return _this6;
   }
 
   _createClass(ViewedDataset, [{
@@ -219,11 +260,16 @@ var ViewedDataset = function (_React$Component4) {
     value: function componentDidMount() {
       this.getDatasetInfo();
     }
+
+    // getDatasetInfo:
+    // - Request dataset from the server
+    // //////////////////////////////
+
   }, {
     key: "getDatasetInfo",
     value: function () {
       var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-        var _this6 = this;
+        var _this7 = this;
 
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
@@ -239,7 +285,7 @@ var ViewedDataset = function (_React$Component4) {
                   success: function success(response) {
                     response = JSON.parse(response);
                     var dataset = response.dataset;
-                    _this6.setState({
+                    _this7.setState({
                       datasetName: dataset.datasetName,
                       columns: dataset.columns,
                       entries: dataset.entries,
@@ -268,7 +314,6 @@ var ViewedDataset = function (_React$Component4) {
   }, {
     key: "render",
     value: function render() {
-      var datasetID = this.props.datasetID;
       var unviewDataset = this.props.unviewDataset;
 
       var datasetName = this.state.datasetName;
@@ -342,17 +387,22 @@ var DatasetList = function (_React$Component5) {
   function DatasetList(props) {
     _classCallCheck(this, DatasetList);
 
-    var _this7 = _possibleConstructorReturn(this, (DatasetList.__proto__ || Object.getPrototypeOf(DatasetList)).call(this, props));
+    var _this8 = _possibleConstructorReturn(this, (DatasetList.__proto__ || Object.getPrototypeOf(DatasetList)).call(this, props));
 
-    _this7.state = {
+    _this8.state = {
       selectedID: ''
     };
 
-    _this7.componentDidUpdate = _this7.componentDidUpdate.bind(_this7);
-    _this7.viewDataset = _this7.viewDataset.bind(_this7);
-    _this7.unviewDataset = _this7.unviewDataset.bind(_this7);
-    return _this7;
+    _this8.componentDidUpdate = _this8.componentDidUpdate.bind(_this8);
+    _this8.viewDataset = _this8.viewDataset.bind(_this8);
+    _this8.unviewDataset = _this8.unviewDataset.bind(_this8);
+    return _this8;
   }
+
+  // componentDidMount:
+  // - Apply styles to the img svg's that can only be done in code after the elements are rendered
+  // //////////////////////////////
+
 
   _createClass(DatasetList, [{
     key: "componentDidUpdate",
@@ -389,8 +439,6 @@ var DatasetList = function (_React$Component5) {
           $img.replaceWith($svg);
         }, 'xml');
       });
-
-      // this.forceUpdate();
     }
   }, {
     key: "viewDataset",
@@ -402,6 +450,11 @@ var DatasetList = function (_React$Component5) {
     value: function unviewDataset() {
       this.setState({ selectedID: '' });
     }
+
+    // downloadDataset:
+    // - Retrieve CSV string from server and download the dataset as a CSV
+    // //////////////////////////////
+
   }, {
     key: "downloadDataset",
     value: function () {
@@ -451,13 +504,17 @@ var DatasetList = function (_React$Component5) {
 
       return downloadDataset;
     }()
+
+    // removeDataset:
+    // - Attempt to remove dataset from the database
+    // //////////////////////////////
+
   }, {
     key: "removeDataset",
     value: function () {
       var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(id) {
-        var _this8 = this;
+        var _this9 = this;
 
-        var result;
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
@@ -471,14 +528,11 @@ var DatasetList = function (_React$Component5) {
                     _csrf: this.props.csrf
                   },
                   success: function success() {
-                    _this8.props.getUserDatasets();
+                    _this9.props.getUserDatasets();
                   }
                 });
 
               case 2:
-                result = _context3.sent;
-
-              case 3:
               case "end":
                 return _context3.stop();
             }
@@ -495,7 +549,7 @@ var DatasetList = function (_React$Component5) {
   }, {
     key: "render",
     value: function render() {
-      var _this9 = this;
+      var _this10 = this;
 
       var userDatasets = this.props.userDatasets;
       var viewing = this.state.selectedID !== '';
@@ -533,21 +587,21 @@ var DatasetList = function (_React$Component5) {
               React.createElement(
                 "span",
                 { className: "datasetListItemSpan datasetListItemLink", onClick: function onClick() {
-                    _this9.viewDataset(dataset._id);
+                    _this10.viewDataset(dataset._id);
                   }, "aria-label": "View Dataset" },
                 React.createElement("img", { src: "/assets/img/view_icon.svg", className: "vlIcon" })
               ),
               React.createElement(
                 "span",
                 { className: "datasetListItemSpan datasetListItemLink", onClick: function onClick() {
-                    _this9.downloadDataset(dataset._id, dataset.datasetName);
+                    _this10.downloadDataset(dataset._id, dataset.datasetName);
                   }, "aria-label": "Download Dataset" },
                 React.createElement("img", { src: "/assets/img/download_icon.svg", className: "vlIcon" })
               ),
               React.createElement(
                 "span",
                 { className: "datasetListItemSpan datasetListItemLink", onClick: function onClick() {
-                    _this9.removeDataset(dataset._id);
+                    _this10.removeDataset(dataset._id);
                   }, "aria-label": "Delete Dataset" },
                 React.createElement("img", { src: "/assets/img/remove_icon.svg", className: "vlIcon" })
               )
@@ -567,10 +621,10 @@ var Analytics = function (_React$Component6) {
   function Analytics(props) {
     _classCallCheck(this, Analytics);
 
-    var _this10 = _possibleConstructorReturn(this, (Analytics.__proto__ || Object.getPrototypeOf(Analytics)).call(this, props));
+    var _this11 = _possibleConstructorReturn(this, (Analytics.__proto__ || Object.getPrototypeOf(Analytics)).call(this, props));
 
-    _this10.state = {};
-    return _this10;
+    _this11.state = {};
+    return _this11;
   }
 
   _createClass(Analytics, [{
@@ -602,16 +656,16 @@ var Content = function (_React$Component7) {
   function Content(props) {
     _classCallCheck(this, Content);
 
-    var _this11 = _possibleConstructorReturn(this, (Content.__proto__ || Object.getPrototypeOf(Content)).call(this, props));
+    var _this12 = _possibleConstructorReturn(this, (Content.__proto__ || Object.getPrototypeOf(Content)).call(this, props));
 
-    _this11.state = {
+    _this12.state = {
       selectedPage: "home",
       userDatasets: []
     };
 
-    _this11.selectPage = _this11.selectPage.bind(_this11);
-    _this11.getUserDatasets = _this11.getUserDatasets.bind(_this11);
-    return _this11;
+    _this12.selectPage = _this12.selectPage.bind(_this12);
+    _this12.getUserDatasets = _this12.getUserDatasets.bind(_this12);
+    return _this12;
   }
 
   _createClass(Content, [{
@@ -622,11 +676,16 @@ var Content = function (_React$Component7) {
         this.getUserDatasets();
       }
     }
+
+    // getUserDatasets:
+    // - Load list of the user's datasets
+    // //////////////////////////////
+
   }, {
     key: "getUserDatasets",
     value: function () {
       var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
-        var _this12 = this;
+        var _this13 = this;
 
         return regeneratorRuntime.wrap(function _callee4$(_context4) {
           while (1) {
@@ -638,7 +697,7 @@ var Content = function (_React$Component7) {
                   url: '/getDatasetList',
                   success: function success(response) {
                     response = JSON.parse(response);
-                    _this12.setState({ userDatasets: response.datasets });
+                    _this13.setState({ userDatasets: response.datasets });
                   },
                   error: function error(err) {
                     console.dir(err);
@@ -662,7 +721,7 @@ var Content = function (_React$Component7) {
   }, {
     key: "render",
     value: function render() {
-      var _this13 = this;
+      var _this14 = this;
 
       var csrf = this.props.csrf;
       var page = void 0;
@@ -734,7 +793,7 @@ var Content = function (_React$Component7) {
               {
                 className: "sidebarItem " + (this.state.selectedPage === 'home' ? 'selectedSidebarItem' : ''),
                 onClick: function onClick() {
-                  return _this13.selectPage('home');
+                  return _this14.selectPage('home');
                 }
               },
               React.createElement(
@@ -748,7 +807,7 @@ var Content = function (_React$Component7) {
               {
                 className: "sidebarItem " + (this.state.selectedPage === 'addData' ? 'selectedSidebarItem' : ''),
                 onClick: function onClick() {
-                  return _this13.selectPage('addData');
+                  return _this14.selectPage('addData');
                 }
               },
               React.createElement(
@@ -762,7 +821,7 @@ var Content = function (_React$Component7) {
               {
                 className: "sidebarItem " + (this.state.selectedPage === 'myData' ? 'selectedSidebarItem' : ''),
                 onClick: function onClick() {
-                  return _this13.selectPage('myData');
+                  return _this14.selectPage('myData');
                 }
               },
               React.createElement(
@@ -776,7 +835,7 @@ var Content = function (_React$Component7) {
               {
                 className: "sidebarItem " + (this.state.selectedPage === 'analytics' ? 'selectedSidebarItem' : ''),
                 onClick: function onClick() {
-                  return _this13.selectPage('analytics');
+                  return _this14.selectPage('analytics');
                 }
               },
               React.createElement(
@@ -805,11 +864,11 @@ var Page = function (_React$Component8) {
   function Page(props) {
     _classCallCheck(this, Page);
 
-    var _this14 = _possibleConstructorReturn(this, (Page.__proto__ || Object.getPrototypeOf(Page)).call(this, props));
+    var _this15 = _possibleConstructorReturn(this, (Page.__proto__ || Object.getPrototypeOf(Page)).call(this, props));
 
-    _this14.state = {};
+    _this15.state = {};
 
-    return _this14;
+    return _this15;
   }
 
   _createClass(Page, [{
@@ -820,7 +879,7 @@ var Page = function (_React$Component8) {
       return React.createElement(
         "div",
         { id: "page" },
-        React.createElement(Header, { handleLogoutClick: this.handleLogoutClick }),
+        React.createElement(Header, null),
         React.createElement(Content, { csrf: csrf }),
         React.createElement("div", { id: "footer" })
       );
@@ -840,43 +899,9 @@ var renderPage = function renderPage(csrf) {
   ReactDOM.render(React.createElement(Page, { csrf: csrf }), document.querySelector("#app"));
 };
 
-var submitCSV = function submitCSV() {
-  console.dir('Pressed it');
-
-  var csvFile = $('#csvFile')[0].files[0];
-
-  if (!csvFile) {
-    console.dir('No file selected');
-    // Throw clientside error 'No file selected'
-    return;
-  }
-
-  //Disable submit button while submitting
-  $('#csvButton').attr('disabled', 'disabled');
-
-  //Parse CSV 
-  var csvJSON = parseCSVToJSON(csvFile);
-
-  //Send JSON to server
-  var xhr = new XMLHttpRequest();
-  xhr.onload = function () {
-    $('#csvButton').removeAttr('disabled');
-    // Update screen to reflect upload status
-    console.dir('Ayy lmao');
-  };
-
-  xhr.open('POST', '/upload');
-  xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-  xhr.send(JSON.stringify(csvJSON));
-};
-
 $(document).ready(function () {
   getToken();
 });
-
-var handleError = function handleError(message) {
-  //Change client to reflect error message
-};
 
 var redirect = function redirect(response) {
   window.location = response.redirect;

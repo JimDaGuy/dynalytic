@@ -30,12 +30,12 @@ class Content extends React.Component {
         <h1 className="appName">dynalytic</h1>
         <h2 className="appTagline">Visualize your data</h2>
         <div className="appDescription">
-          Dynalytic allows users to upload their datasets and quickly 
-          create helpful visualizations to better understand them. Simply upload
-          a csv file, provide extra information as neccesary, and manipulate
-          the data into useful representations in minutes. 
-          Dynalytic has the tools for you to add, remove, and modify datasets
-          to make the data work for you. Create an account to get started!
+          Dynalytic allows users to store their datasets and download them with ease.
+          Simply upload a csv file, provide a name for your data, and create a new dataset.
+          Dynalytic will provide features to premium users for analyzing and modifying
+          their datasets as well as accompanying visualizations to help them better understand
+          their data. Dynalytic helps to make your data do the most work for you.
+          Create an account to get started!
       </div>
       </div>
     );
@@ -52,23 +52,37 @@ class Form extends React.Component {
       signUpUsername: '',
       signUpPassword: '',
       signUpPasswordSecondary: '',
+      changeUsername: '',
+      changePassword: '',
+      changeNewPassword: '',
+      changeNewPasswordSecondary: '',
       loginErrorMessage: '',
       signUpErrorMessage: '',
+      changeErrorMessage: '',
     }
 
     this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
     this.handleSignUpSubmit = this.handleSignUpSubmit.bind(this);
+    this.handleChangePasswordSubmit = this.handleChangePasswordSubmit.bind(this);
 
     this.handleLoginUsernameChange = this.handleLoginUsernameChange.bind(this);
     this.handleLoginPasswordChange = this.handleLoginPasswordChange.bind(this);
     this.handleSignUpUsernameChange = this.handleSignUpUsernameChange.bind(this);
     this.handleSignUpPasswordChange = this.handleSignUpPasswordChange.bind(this);
     this.handleSignUpPasswordSecondaryChange = this.handleSignUpPasswordSecondaryChange.bind(this);
-  
+    this.handleChangeUsernameChange = this.handleChangeUsernameChange.bind(this);
+    this.handleChangePasswordChange = this.handleChangePasswordChange.bind(this);
+    this.handleChangeNewPasswordChange = this.handleChangeNewPasswordChange.bind(this);
+    this.handleChangeNewPasswordSecondaryChange = this.handleChangeNewPasswordSecondaryChange.bind(this);
+
     this.displayLoginError = this.displayLoginError.bind(this);
     this.displaySignupError = this.displaySignupError.bind(this);
+    this.displayChangeError = this.displayChangeError.bind(this);
   }
 
+  // handleLoginSubmit:
+  // - Prevent default action, check form before sending login post to server, display errors when neccesary
+  // //////////////////////////////
   handleLoginSubmit(e) {
     e.preventDefault();
 
@@ -87,6 +101,9 @@ class Form extends React.Component {
     return false;
   }
 
+  // handleSignupSubmit:
+  // - Prevent default action, check form before sending signup post to server, display errors when neccesary
+  // //////////////////////////////
   handleSignUpSubmit(e) {
     e.preventDefault();
 
@@ -110,6 +127,35 @@ class Form extends React.Component {
     return false;
   }
 
+  // handleChangePasswordSubmit:
+  // - Prevent default action, check form before sending change pw post to server, display errors when neccesary
+  // //////////////////////////////
+  handleChangePasswordSubmit(e) {
+    e.preventDefault();
+
+    if (this.state.changeUsername == '' || this.state.changePassword == '' || this.state.changeNewPassword == '' || this.state.changeNewPasswordSecondary == '') {
+      this.displayChangeError('All fields are required for signing up.');
+      return false;
+    }
+
+    if (this.state.changeNewPassword !== this.state.changeNewPasswordSecondary) {
+      this.displayChangeError('The new password fields do not match.');
+      return false;
+    }
+
+    this.sendAjaxDisplayError('POST', $("#changeForm").attr("action"), $("#changeForm").serialize(), redirect,
+      (xhr, status, error) => {
+        const messageObj = JSON.parse(xhr.responseText);
+        this.displayChangeError(messageObj.error);
+      }
+    );
+
+    return false;
+  }
+
+  // sendAjaxDisplayError:
+  // - Send AJAX to the server, contains callbacks for success and error
+  // //////////////////////////////
   sendAjaxDisplayError(type, action, data, success, error) {
     $.ajax({
       cache: false,
@@ -152,6 +198,30 @@ class Form extends React.Component {
     });
   }
 
+  handleChangeUsernameChange(e) {
+    this.setState({
+      changeUsername: e.target.value,
+    });
+  }
+
+  handleChangePasswordChange(e) {
+    this.setState({
+      changePassword: e.target.value,
+    });
+  }
+
+  handleChangeNewPasswordChange(e) {
+    this.setState({
+      changeNewPassword: e.target.value,
+    });
+  }
+
+  handleChangeNewPasswordSecondaryChange(e) {
+    this.setState({
+      changeNewPasswordSecondary: e.target.value,
+    });
+  }
+
   displayLoginError(message) {
     this.setState({
       loginErrorMessage: message,
@@ -164,10 +234,18 @@ class Form extends React.Component {
     })
   }
 
+  displayChangeError(message) {
+    this.setState({
+      changeErrorMessage: message,
+    })
+  }
+
   render() {
     const loggingIn = this.props.loggingIn;
     const signingUp = this.props.signingUp;
+    const changingPassword = this.props.changingPassword;
     const csrf = this.props.csrf;
+    const handleChangePasswordClick = this.props.handleChangePasswordClick;
     const handleOverlayClick = this.props.handleOverlayClick;
     const stopPropagation = this.props.stopPropagation;
 
@@ -176,7 +254,11 @@ class Form extends React.Component {
     const signUpUsername = this.state.signUpUsername;
     const signUpPassword = this.state.signUpPassword;
     const signUpPasswordSecondary = this.state.signUpPasswordSecondary;
-   
+    const changeUsername = this.state.changeUsername;
+    const changePassword = this.state.changePassword;
+    const changeNewPassword = this.state.changeNewPassword;
+    const changeNewPasswordSecondary = this.state.changeNewPasswordSecondary;
+
     let form;
 
     if (loggingIn) {
@@ -197,10 +279,15 @@ class Form extends React.Component {
             <p class="clearfix">
               <label htmlFor="pass">Password: </label>
               <input id="pass" type="password" name="pass" placeholder="password" value={loginPassword} onChange={this.handleLoginPasswordChange} />
-            </p>            
+            </p>
             <input type="hidden" name="_csrf" value={csrf} />
             <p class="clearfix">
               <input className="formSubmit" type="submit" value="Sign In" />
+            </p>
+            <p class="clearfix">
+              <div id="changePasswordButton" onClick={handleChangePasswordClick}>
+                <span>Change Password</span>
+              </div>
             </p>
             <p class="clearfix">
               {this.state.loginErrorMessage !== '' &&
@@ -243,6 +330,44 @@ class Form extends React.Component {
             </p>
           </form>
         </div>;
+    } else if (changingPassword) {
+      form =
+        <div id="formOverlay" onClick={handleOverlayClick} >
+          <form id="changeForm"
+            name="changeForm"
+            onSubmit={this.handleChangePasswordSubmit}
+            action="/changePassword"
+            method="POST"
+            className="mainForm"
+            onClick={stopPropagation}
+          >
+            <p class="clearfix">
+              <label htmlFor="username">Username: </label>
+              <input id="user" type="text" name="username" placeholder="username" value={changeUsername} onChange={this.handleChangeUsernameChange} />
+            </p>
+            <p class="clearfix">
+              <label htmlFor="pass">Password: </label>
+              <input id="pass" type="password" name="pass" placeholder="password" value={changePassword} onChange={this.handleChangePasswordChange} />
+            </p>
+            <p class="clearfix">
+              <label htmlFor="newpass1">New Password: </label>
+              <input id="newpass1" type="password" name="newpass1" placeholder="type new password" value={changeNewPassword} onChange={this.handleChangeNewPasswordChange} />
+            </p>
+            <p class="clearfix">
+              <label htmlFor="newpass2">New Password: </label>
+              <input id="newpass2" type="password" name="newpass2" placeholder="retype new password" value={changeNewPasswordSecondary} onChange={this.handleChangeNewPasswordSecondaryChange} />
+            </p>
+            <input type="hidden" name="_csrf" value={csrf} />
+            <p class="clearfix">
+              <input className="formSubmit" type="submit" value="Change Password" />
+            </p>
+            <p class="clearfix">
+              {this.state.changeErrorMessage !== '' &&
+                <div className="errorBox">{this.state.changeErrorMessage}</div>
+              }
+            </p>
+          </form>
+        </div>;
     }
 
     return (
@@ -259,10 +384,12 @@ class Page extends React.Component {
     this.state = {
       loggingIn: false,
       signingUp: false,
+      changingPassword: false,
     };
 
     this.handleSignInClick = this.handleSignInClick.bind(this);
     this.handleSignUpClick = this.handleSignUpClick.bind(this);
+    this.handleChangePasswordClick = this.handleChangePasswordClick.bind(this);
     this.handleOverlayClick = this.handleOverlayClick.bind(this);
   }
 
@@ -270,6 +397,7 @@ class Page extends React.Component {
     this.setState({
       loggingIn: true,
       signingUp: false,
+      changingPassword: false,
     });
   }
 
@@ -277,6 +405,15 @@ class Page extends React.Component {
     this.setState({
       loggingIn: false,
       signingUp: true,
+      changingPassword: false,
+    });
+  }
+
+  handleChangePasswordClick() {
+    this.setState({
+      loggingIn: false,
+      signingUp: false,
+      changingPassword: true,
     });
   }
 
@@ -284,23 +421,36 @@ class Page extends React.Component {
     this.setState({
       loggingIn: false,
       signingUp: false,
+      changingPassword: false,
     });
   }
 
-  stopPropagation (e) {
+  stopPropagation(e) {
     e.stopPropagation();
   }
 
   render() {
     const loggingIn = this.state.loggingIn;
     const signingUp = this.state.signingUp;
+    const changingPassword = this.state.changingPassword;
     const csrf = this.props.csrf;
 
     return (
       <div id="page">
-        <Header handleSignInClick={this.handleSignInClick} handleSignUpClick={this.handleSignUpClick} />
+        <Header
+          handleSignInClick={this.handleSignInClick}
+          handleSignUpClick={this.handleSignUpClick}
+        />
         <Content />
-        <Form csrf={csrf} loggingIn={loggingIn} signingUp={signingUp} handleOverlayClick={this.handleOverlayClick} stopPropagation={this.stopPropagation} />
+        <Form
+          csrf={csrf}
+          loggingIn={loggingIn}
+          signingUp={signingUp}
+          changingPassword={changingPassword}
+          handleChangePasswordClick={this.handleChangePasswordClick}
+          handleOverlayClick={this.handleOverlayClick}
+          stopPropagation={this.stopPropagation}
+        />
       </div>
     );
   };

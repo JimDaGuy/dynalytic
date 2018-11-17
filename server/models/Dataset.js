@@ -27,6 +27,9 @@ const DatasetSchema = new mongoose.Schema({
   },
 });
 
+// checkDatabaseName:
+// - Check existence of datasetName for the passed in owner
+// //////////////////////////////
 DatasetSchema.statics.checkDatasetName = (owner, datasetName, callback) => {
   const searchParams = {
     owner,
@@ -36,6 +39,9 @@ DatasetSchema.statics.checkDatasetName = (owner, datasetName, callback) => {
   return DatasetModel.findOne(searchParams).exec(callback);
 };
 
+// getDatasetList:
+// - Return list of datasets owner by the passed in owner
+// //////////////////////////////
 DatasetSchema.statics.getDatasetList = (owner, callback) => {
   const searchParams = { owner };
   const returnedFields = ['datasetName', 'lastEdited', '_id'];
@@ -45,6 +51,9 @@ DatasetSchema.statics.getDatasetList = (owner, callback) => {
   .exec(callback);
 };
 
+// getDataset:
+// - Return dataset matching the pased in owner and datasetId
+// //////////////////////////////
 DatasetSchema.statics.getDataset = (owner, datasetId, callback) => {
   const searchParams = { owner, _id: datasetId };
   const returnedFields = ['datasetName', 'columns', 'entries', 'lastEdited'];
@@ -53,6 +62,9 @@ DatasetSchema.statics.getDataset = (owner, datasetId, callback) => {
   .exec(callback);
 };
 
+// removeDataset:
+// - Remove dataset from the database matching the passed in owner and datasetId
+// //////////////////////////////
 DatasetSchema.statics.removeDataset = (owner, datasetId, callback) => {
   const searchParams = { owner, _id: datasetId };
 

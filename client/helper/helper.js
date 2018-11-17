@@ -1,7 +1,3 @@
-const handleError = (message) => {
-  //Change client to reflect error message
-};
-
 const redirect = (response) => {
   window.location = response.redirect;
 };
