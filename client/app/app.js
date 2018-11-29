@@ -1,7 +1,5 @@
 // Main app page
 // Page for main application
-
-
 class Header extends React.Component {
   constructor(props) {
     super(props);
@@ -152,6 +150,7 @@ class ViewedDataset extends React.Component {
     super(props);
 
     this.state = {
+      datasetID: '',
       datasetName: '',
       columns: [],
       entries: [],
@@ -159,10 +158,37 @@ class ViewedDataset extends React.Component {
     };
 
     this.getDatasetInfo = this.getDatasetInfo.bind(this);
+    this.editDataset = this.editDataset.bind(this);
+    this.removeEntry = this.removeEntry.bind(this);
   }
 
   componentDidMount() {
     this.getDatasetInfo();
+  }
+
+  editDataset(csrf) {
+    $.ajax({
+      type: "POST",
+      url: '/editDataset',
+      data: {
+        _csrf: csrf,
+        entries: this.state.entries,
+        datasetID: this.state.datasetID,
+      },
+      success: () => {
+        this.getDatasetInfo();
+      },
+    }).error((err) => {
+
+    });
+  }
+
+  removeEntry(index) {
+    let newEntries = this.state.entries;
+    newEntries.splice(index, 1);
+    this.setState({
+      entries: newEntries,
+    });
   }
 
   // getDatasetInfo:
@@ -179,6 +205,7 @@ class ViewedDataset extends React.Component {
         response = JSON.parse(response);
         const dataset = response.dataset;
         this.setState({
+          datasetID: dataset._id,
           datasetName: dataset.datasetName,
           columns: dataset.columns,
           entries: dataset.entries,
@@ -193,6 +220,7 @@ class ViewedDataset extends React.Component {
 
   render() {
     const unviewDataset = this.props.unviewDataset;
+    const csrf = this.props.csrf;
 
     const datasetName = this.state.datasetName;
     const columns = this.state.columns;
@@ -207,15 +235,18 @@ class ViewedDataset extends React.Component {
           <div>
             <div id="datasetViewHeader">
               <h2 id="datasetViewName">{datasetName}</h2>
-              <button id="unviewDatasetButton" onClick={unviewDataset} >Return to Dataset List</button>
+              <button id="datasetViewButton" onClick={unviewDataset} >Return to Dataset List</button>
+              <button id="datasetViewButton" onClick={() => this.editDataset(csrf)} >Save Changes</button>
             </div>
-            <div className="datasetViewListItem">
+            <div className="datasetViewListItem datasetViewHeadingRow">
+              <div className="submitDatasetBox">#</div>
               {columns.map((column) => {
                 return <div className="datasetItemBox datasetColumnBox">{column}</div>
               })}
             </div>
             {entries.map((entry, index) => {
               return <div className="datasetViewListItem">
+                <div className="removeDatasetItemBox" onClick={() => this.removeEntry(index)}>{index}</div>
                 {columns.map((column) => {
                   return <div className="datasetItemBox">{entry[column]}</div>
                 })
@@ -334,12 +365,14 @@ class DatasetList extends React.Component {
 
   render() {
     const userDatasets = this.props.userDatasets;
+    const csrf = this.props.csrf;
+
     let viewing = this.state.selectedID !== '';
 
     return (
       <div id="datasetListContainer">
         {viewing ?
-          <ViewedDataset datasetID={this.state.selectedID} unviewDataset={this.unviewDataset} />
+          <ViewedDataset datasetID={this.state.selectedID} unviewDataset={this.unviewDataset} csrf={csrf} />
           :
           <div id="datasetListView">
             {userDatasets.length < 1 &&

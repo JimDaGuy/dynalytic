@@ -12,8 +12,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 // Main app page
 // Page for main application
-
-
 var Header = function (_React$Component) {
   _inherits(Header, _React$Component);
 
@@ -245,6 +243,7 @@ var ViewedDataset = function (_React$Component4) {
     var _this6 = _possibleConstructorReturn(this, (ViewedDataset.__proto__ || Object.getPrototypeOf(ViewedDataset)).call(this, props));
 
     _this6.state = {
+      datasetID: '',
       datasetName: '',
       columns: [],
       entries: [],
@@ -252,6 +251,8 @@ var ViewedDataset = function (_React$Component4) {
     };
 
     _this6.getDatasetInfo = _this6.getDatasetInfo.bind(_this6);
+    _this6.editDataset = _this6.editDataset.bind(_this6);
+    _this6.removeEntry = _this6.removeEntry.bind(_this6);
     return _this6;
   }
 
@@ -259,6 +260,33 @@ var ViewedDataset = function (_React$Component4) {
     key: "componentDidMount",
     value: function componentDidMount() {
       this.getDatasetInfo();
+    }
+  }, {
+    key: "editDataset",
+    value: function editDataset(csrf) {
+      var _this7 = this;
+
+      $.ajax({
+        type: "POST",
+        url: '/editDataset',
+        data: {
+          _csrf: csrf,
+          entries: this.state.entries,
+          datasetID: this.state.datasetID
+        },
+        success: function success() {
+          _this7.getDatasetInfo();
+        }
+      }).error(function (err) {});
+    }
+  }, {
+    key: "removeEntry",
+    value: function removeEntry(index) {
+      var newEntries = this.state.entries;
+      newEntries.splice(index, 1);
+      this.setState({
+        entries: newEntries
+      });
     }
 
     // getDatasetInfo:
@@ -269,7 +297,7 @@ var ViewedDataset = function (_React$Component4) {
     key: "getDatasetInfo",
     value: function () {
       var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-        var _this7 = this;
+        var _this8 = this;
 
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
@@ -285,7 +313,8 @@ var ViewedDataset = function (_React$Component4) {
                   success: function success(response) {
                     response = JSON.parse(response);
                     var dataset = response.dataset;
-                    _this7.setState({
+                    _this8.setState({
+                      datasetID: dataset._id,
                       datasetName: dataset.datasetName,
                       columns: dataset.columns,
                       entries: dataset.entries,
@@ -314,7 +343,10 @@ var ViewedDataset = function (_React$Component4) {
   }, {
     key: "render",
     value: function render() {
+      var _this9 = this;
+
       var unviewDataset = this.props.unviewDataset;
+      var csrf = this.props.csrf;
 
       var datasetName = this.state.datasetName;
       var columns = this.state.columns;
@@ -345,13 +377,25 @@ var ViewedDataset = function (_React$Component4) {
             ),
             React.createElement(
               "button",
-              { id: "unviewDatasetButton", onClick: unviewDataset },
+              { id: "datasetViewButton", onClick: unviewDataset },
               "Return to Dataset List"
+            ),
+            React.createElement(
+              "button",
+              { id: "datasetViewButton", onClick: function onClick() {
+                  return _this9.editDataset(csrf);
+                } },
+              "Save Changes"
             )
           ),
           React.createElement(
             "div",
-            { className: "datasetViewListItem" },
+            { className: "datasetViewListItem datasetViewHeadingRow" },
+            React.createElement(
+              "div",
+              { className: "submitDatasetBox" },
+              "#"
+            ),
             columns.map(function (column) {
               return React.createElement(
                 "div",
@@ -364,6 +408,13 @@ var ViewedDataset = function (_React$Component4) {
             return React.createElement(
               "div",
               { className: "datasetViewListItem" },
+              React.createElement(
+                "div",
+                { className: "removeDatasetItemBox", onClick: function onClick() {
+                    return _this9.removeEntry(index);
+                  } },
+                index
+              ),
               columns.map(function (column) {
                 return React.createElement(
                   "div",
@@ -387,16 +438,16 @@ var DatasetList = function (_React$Component5) {
   function DatasetList(props) {
     _classCallCheck(this, DatasetList);
 
-    var _this8 = _possibleConstructorReturn(this, (DatasetList.__proto__ || Object.getPrototypeOf(DatasetList)).call(this, props));
+    var _this10 = _possibleConstructorReturn(this, (DatasetList.__proto__ || Object.getPrototypeOf(DatasetList)).call(this, props));
 
-    _this8.state = {
+    _this10.state = {
       selectedID: ''
     };
 
-    _this8.componentDidUpdate = _this8.componentDidUpdate.bind(_this8);
-    _this8.viewDataset = _this8.viewDataset.bind(_this8);
-    _this8.unviewDataset = _this8.unviewDataset.bind(_this8);
-    return _this8;
+    _this10.componentDidUpdate = _this10.componentDidUpdate.bind(_this10);
+    _this10.viewDataset = _this10.viewDataset.bind(_this10);
+    _this10.unviewDataset = _this10.unviewDataset.bind(_this10);
+    return _this10;
   }
 
   // componentDidMount:
@@ -513,7 +564,7 @@ var DatasetList = function (_React$Component5) {
     key: "removeDataset",
     value: function () {
       var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(id) {
-        var _this9 = this;
+        var _this11 = this;
 
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
@@ -528,7 +579,7 @@ var DatasetList = function (_React$Component5) {
                     _csrf: this.props.csrf
                   },
                   success: function success() {
-                    _this9.props.getUserDatasets();
+                    _this11.props.getUserDatasets();
                   }
                 });
 
@@ -549,15 +600,17 @@ var DatasetList = function (_React$Component5) {
   }, {
     key: "render",
     value: function render() {
-      var _this10 = this;
+      var _this12 = this;
 
       var userDatasets = this.props.userDatasets;
+      var csrf = this.props.csrf;
+
       var viewing = this.state.selectedID !== '';
 
       return React.createElement(
         "div",
         { id: "datasetListContainer" },
-        viewing ? React.createElement(ViewedDataset, { datasetID: this.state.selectedID, unviewDataset: this.unviewDataset }) : React.createElement(
+        viewing ? React.createElement(ViewedDataset, { datasetID: this.state.selectedID, unviewDataset: this.unviewDataset, csrf: csrf }) : React.createElement(
           "div",
           { id: "datasetListView" },
           userDatasets.length < 1 && React.createElement(
@@ -587,21 +640,21 @@ var DatasetList = function (_React$Component5) {
               React.createElement(
                 "span",
                 { className: "datasetListItemSpan datasetListItemLink", onClick: function onClick() {
-                    _this10.viewDataset(dataset._id);
+                    _this12.viewDataset(dataset._id);
                   }, "aria-label": "View Dataset" },
                 React.createElement("img", { src: "/assets/img/view_icon.svg", className: "vlIcon" })
               ),
               React.createElement(
                 "span",
                 { className: "datasetListItemSpan datasetListItemLink", onClick: function onClick() {
-                    _this10.downloadDataset(dataset._id, dataset.datasetName);
+                    _this12.downloadDataset(dataset._id, dataset.datasetName);
                   }, "aria-label": "Download Dataset" },
                 React.createElement("img", { src: "/assets/img/download_icon.svg", className: "vlIcon" })
               ),
               React.createElement(
                 "span",
                 { className: "datasetListItemSpan datasetListItemLink", onClick: function onClick() {
-                    _this10.removeDataset(dataset._id);
+                    _this12.removeDataset(dataset._id);
                   }, "aria-label": "Delete Dataset" },
                 React.createElement("img", { src: "/assets/img/remove_icon.svg", className: "vlIcon" })
               )
@@ -621,10 +674,10 @@ var Analytics = function (_React$Component6) {
   function Analytics(props) {
     _classCallCheck(this, Analytics);
 
-    var _this11 = _possibleConstructorReturn(this, (Analytics.__proto__ || Object.getPrototypeOf(Analytics)).call(this, props));
+    var _this13 = _possibleConstructorReturn(this, (Analytics.__proto__ || Object.getPrototypeOf(Analytics)).call(this, props));
 
-    _this11.state = {};
-    return _this11;
+    _this13.state = {};
+    return _this13;
   }
 
   _createClass(Analytics, [{
@@ -656,16 +709,16 @@ var Content = function (_React$Component7) {
   function Content(props) {
     _classCallCheck(this, Content);
 
-    var _this12 = _possibleConstructorReturn(this, (Content.__proto__ || Object.getPrototypeOf(Content)).call(this, props));
+    var _this14 = _possibleConstructorReturn(this, (Content.__proto__ || Object.getPrototypeOf(Content)).call(this, props));
 
-    _this12.state = {
+    _this14.state = {
       selectedPage: "home",
       userDatasets: []
     };
 
-    _this12.selectPage = _this12.selectPage.bind(_this12);
-    _this12.getUserDatasets = _this12.getUserDatasets.bind(_this12);
-    return _this12;
+    _this14.selectPage = _this14.selectPage.bind(_this14);
+    _this14.getUserDatasets = _this14.getUserDatasets.bind(_this14);
+    return _this14;
   }
 
   _createClass(Content, [{
@@ -685,7 +738,7 @@ var Content = function (_React$Component7) {
     key: "getUserDatasets",
     value: function () {
       var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
-        var _this13 = this;
+        var _this15 = this;
 
         return regeneratorRuntime.wrap(function _callee4$(_context4) {
           while (1) {
@@ -697,7 +750,7 @@ var Content = function (_React$Component7) {
                   url: '/getDatasetList',
                   success: function success(response) {
                     response = JSON.parse(response);
-                    _this13.setState({ userDatasets: response.datasets });
+                    _this15.setState({ userDatasets: response.datasets });
                   },
                   error: function error(err) {
                     console.dir(err);
@@ -721,7 +774,7 @@ var Content = function (_React$Component7) {
   }, {
     key: "render",
     value: function render() {
-      var _this14 = this;
+      var _this16 = this;
 
       var csrf = this.props.csrf;
       var page = void 0;
@@ -793,7 +846,7 @@ var Content = function (_React$Component7) {
               {
                 className: "sidebarItem " + (this.state.selectedPage === 'home' ? 'selectedSidebarItem' : ''),
                 onClick: function onClick() {
-                  return _this14.selectPage('home');
+                  return _this16.selectPage('home');
                 }
               },
               React.createElement(
@@ -807,7 +860,7 @@ var Content = function (_React$Component7) {
               {
                 className: "sidebarItem " + (this.state.selectedPage === 'addData' ? 'selectedSidebarItem' : ''),
                 onClick: function onClick() {
-                  return _this14.selectPage('addData');
+                  return _this16.selectPage('addData');
                 }
               },
               React.createElement(
@@ -821,7 +874,7 @@ var Content = function (_React$Component7) {
               {
                 className: "sidebarItem " + (this.state.selectedPage === 'myData' ? 'selectedSidebarItem' : ''),
                 onClick: function onClick() {
-                  return _this14.selectPage('myData');
+                  return _this16.selectPage('myData');
                 }
               },
               React.createElement(
@@ -835,7 +888,7 @@ var Content = function (_React$Component7) {
               {
                 className: "sidebarItem " + (this.state.selectedPage === 'analytics' ? 'selectedSidebarItem' : ''),
                 onClick: function onClick() {
-                  return _this14.selectPage('analytics');
+                  return _this16.selectPage('analytics');
                 }
               },
               React.createElement(
@@ -864,11 +917,11 @@ var Page = function (_React$Component8) {
   function Page(props) {
     _classCallCheck(this, Page);
 
-    var _this15 = _possibleConstructorReturn(this, (Page.__proto__ || Object.getPrototypeOf(Page)).call(this, props));
+    var _this17 = _possibleConstructorReturn(this, (Page.__proto__ || Object.getPrototypeOf(Page)).call(this, props));
 
-    _this15.state = {};
+    _this17.state = {};
 
-    return _this15;
+    return _this17;
   }
 
   _createClass(Page, [{

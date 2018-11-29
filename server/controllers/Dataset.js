@@ -140,8 +140,28 @@ const removeDataset = (req, res) => {
   });
 };
 
+// editDataset:
+// - Set the entries a dataset matching the datasetID belonging to the currently signed in user
+// /////////////////////////////
+// eslint-disable-next-line consistent-return
+const editDataset = (req, res) => {
+  if (!req.body.datasetID || !req.body.entries) {
+    return res.status(400).json({ error: 'DatasetID and Entries required to edit a dataset' });
+  }
+
+  Dataset.DatasetModel.editDataset(req.session.account._id, req.body.datasetID,
+    req.body.entries, (err) => {
+      if (err) {
+        return res.status(400).json({ error: 'Error editing dataset' });
+      }
+
+      return res.status(200).json({ message: 'Dataset successfully edited' });
+    });
+};
+
 module.exports.uploadDataset = uploadDataset;
 module.exports.getDatasetList = getDatasetList;
 module.exports.getDataset = getDataset;
 module.exports.getDatasetCSV = getDatasetCSV;
 module.exports.removeDataset = removeDataset;
+module.exports.editDataset = editDataset;

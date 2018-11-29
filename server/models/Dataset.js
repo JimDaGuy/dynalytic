@@ -56,7 +56,7 @@ DatasetSchema.statics.getDatasetList = (owner, callback) => {
 // //////////////////////////////
 DatasetSchema.statics.getDataset = (owner, datasetId, callback) => {
   const searchParams = { owner, _id: datasetId };
-  const returnedFields = ['datasetName', 'columns', 'entries', 'lastEdited'];
+  const returnedFields = ['_id', 'datasetName', 'columns', 'entries', 'lastEdited'];
 
   return DatasetModel.findOne(searchParams).select(returnedFields).lean()
   .exec(callback);
@@ -69,6 +69,16 @@ DatasetSchema.statics.removeDataset = (owner, datasetId, callback) => {
   const searchParams = { owner, _id: datasetId };
 
   return DatasetModel.remove(searchParams).exec(callback);
+};
+
+// editDataset:
+// - Set the entries attribute of a dataset matching the passed in owner and datasetId
+// /////////////////////////////
+DatasetSchema.statics.editDataset = (owner, datasetId, entries, callback) => {
+  const searchParams = { owner, _id: datasetId };
+
+  // Find matching dataset, set entries to the passed in entries
+  return DatasetModel.updateOne(searchParams, { $set: { entries } }, callback);
 };
 
 DatasetModel = mongoose.model('Dataset', DatasetSchema);

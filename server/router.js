@@ -14,6 +14,7 @@ const router = (app) => {
   controllers.Account.changePassword);
 
   app.post('/upload', mid.requiresSecure, mid.requiresLogin, controllers.Dataset.uploadDataset);
+  app.post('/editDataset', mid.requiresSecure, mid.requiresLogin, controllers.Dataset.editDataset);
 
   // Get Information
   app.get('/getDatasetList', mid.requiresSecure, mid.requiresLogin,
