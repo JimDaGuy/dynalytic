@@ -155,11 +155,14 @@ class ViewedDataset extends React.Component {
       columns: [],
       entries: [],
       loading: true,
+      currentEntry: {},
     };
 
     this.getDatasetInfo = this.getDatasetInfo.bind(this);
     this.editDataset = this.editDataset.bind(this);
     this.removeEntry = this.removeEntry.bind(this);
+    this.updateCurrentEntry = this.updateCurrentEntry.bind(this);
+    this.submitCurrentEntry = this.submitCurrentEntry.bind(this);
   }
 
   componentDidMount() {
@@ -188,6 +191,53 @@ class ViewedDataset extends React.Component {
     newEntries.splice(index, 1);
     this.setState({
       entries: newEntries,
+    });
+  }
+
+  updateCurrentEntry(e, column) {
+    let currentEntry = this.state.currentEntry;
+    if (e.target.value === '')
+      delete currentEntry[column];
+    else
+      currentEntry[column] = e.target.value;
+    this.setState({
+      currentEntry,
+    });
+  }
+
+  submitCurrentEntry(csrf) {
+    // If all entries are empty, ignore the submission
+    if (Object.keys(this.state.currentEntry).length === 0) {
+      return;
+    }
+
+    let currentEntries = this.state.entries;
+    currentEntries.unshift(this.state.currentEntry);
+    this.setState({
+      entries: currentEntries,
+    });
+
+    $.ajax({
+      type: "POST",
+      url: '/editDataset',
+      data: {
+        _csrf: csrf,
+        entries: this.state.entries,
+        datasetID: this.state.datasetID,
+      },
+      success: () => {
+        this.getDatasetInfo();
+        const columnInputs = $('.datasetColumnInput');
+        for (let i = 0; i < columnInputs.length; i++) {
+          let ci = columnInputs[i];
+          ci.value = '';
+        }
+        this.setState({
+          currentEntry: {},
+        });
+      },
+    }).error((err) => {
+
     });
   }
 
@@ -237,11 +287,20 @@ class ViewedDataset extends React.Component {
               <h2 id="datasetViewName">{datasetName}</h2>
               <button id="datasetViewButton" onClick={unviewDataset} >Return to Dataset List</button>
               <button id="datasetViewButton" onClick={() => this.editDataset(csrf)} >Save Changes</button>
+              <button id="datasetViewButton" onClick={this.getDatasetInfo} >Refresh Dataset</button>
             </div>
             <div className="datasetViewListItem datasetViewHeadingRow">
-              <div className="submitDatasetBox">#</div>
+              <div className="datasetNumBox">#</div>
               {columns.map((column) => {
                 return <div className="datasetItemBox datasetColumnBox">{column}</div>
+              })}
+            </div>
+            <div className="datasetViewListItem">
+              <div className="submitEntryBox" onClick={() => this.submitCurrentEntry(csrf)} >+</div>
+              {columns.map((column) => {
+                return <div className="datasetItemBox datasetColumnBox" >
+                  <input className="datasetColumnInput" type="text" placeholder={column} onChange={(e) => this.updateCurrentEntry(e, column)} />
+                </div>
               })}
             </div>
             {entries.map((entry, index) => {

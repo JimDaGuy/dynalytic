@@ -112,12 +112,19 @@ html, body {
       #dashboard .selectedDashboardPage #addDataContainer #csvUploadContainer {
         overflow: hidden;
         position: relative;
-        background: orange;
-        border-radius: 5px;
+        background-color: #71e0e0;
+        border: 5px dashed #0094c5;
         float: left;
+        text-align: center;
+        width: calc(100% - 10px);
         height: 20px;
-        padding: 5px;
+        padding: 50px 0;
+        line-height: 30px;
+        border-radius: 5px;
+        margin-top: 20px;
         clear: both; }
+      #dashboard .selectedDashboardPage #addDataContainer #csvUploadContainer:hover {
+        border: 5px dashed #00c563; }
       #dashboard .selectedDashboardPage #addDataContainer .uploadedCSV {
         background: greenyellow !important; }
       #dashboard .selectedDashboardPage #addDataContainer #csvUploadIcon {
@@ -200,7 +207,7 @@ html, body {
         background-color: pink;
         line-height: 15px;
         white-space: nowrap; }
-      #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer .submitDatasetBox {
+      #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer .datasetNumBox {
         width: 30px;
         height: 28px;
         border: 1px solid black;
@@ -210,6 +217,21 @@ html, body {
         padding: 5px 0;
         line-height: 28px;
         text-align: center; }
+      #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer .submitEntryBox {
+        width: 30px;
+        height: 28px;
+        border: 1px solid black;
+        background-color: #c0ffc0;
+        display: inline-block;
+        overflow: hidden;
+        padding: 5px 0;
+        line-height: 28px;
+        text-align: center;
+        user-select: none; }
+      #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer .submitEntryBox:hover {
+        background-color: greenyellow; }
+      #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer .submitEntryBox:active {
+        background-color: #25e054; }
       #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer .removeDatasetItemBox {
         width: 30px;
         height: 28px;
@@ -219,9 +241,12 @@ html, body {
         overflow: hidden;
         padding: 5px 0;
         line-height: 28px;
-        text-align: center; }
+        text-align: center;
+        user-select: none; }
       #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer .datasetColumnBox {
         font-weight: bold; }
+      #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer .datasetColumnInput {
+        height: 28px; }
       #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer .datasetItemBox {
         width: 30%;
         height: 28px;
@@ -245,6 +270,8 @@ html, body {
         #dashboard .selectedDashboardPage #datasetListContainer .datasetListItem .datasetListItemSpan {
           float: left;
           margin: 10px 10px; }
+        #dashboard .selectedDashboardPage #datasetListContainer .datasetListItem .datasetListItemDate {
+          width: 200px; }
         #dashboard .selectedDashboardPage #datasetListContainer .datasetListItem .vlIcon {
           width: 15px;
           height: 15px; }

@@ -154,14 +154,24 @@ html, body {
         overflow: hidden;
         position: relative;
 
-        background: orange;
-        border-radius: 5px;
+        background-color: rgb(113, 224, 224);
+        border: 5px dashed rgb(0, 148, 197);
         float: left;
+        text-align: center;
 
+        width: calc(100% - 10px);
         height: 20px;
-        padding: 5px;
+        padding: 50px 0;
+        line-height: 30px;
+
+        border-radius: 5px;
+        margin-top: 20px;
 
         clear: both;
+      }
+
+      #csvUploadContainer:hover {
+        border: 5px dashed rgb(0, 197, 99);
       }
 
       .uploadedCSV {
@@ -281,7 +291,7 @@ html, body {
           white-space: nowrap;
         }
 
-        .submitDatasetBox {
+        .datasetNumBox {
           width: 30px;
           height: 28px;
           border: 1px solid black;
@@ -291,6 +301,27 @@ html, body {
           padding: 5px 0;
           line-height: 28px;
           text-align: center;
+        }
+
+        .submitEntryBox {
+          width: 30px;
+          height: 28px;
+          border: 1px solid black;
+          background-color: rgb(192, 255, 192);
+          display: inline-block;
+          overflow: hidden;
+          padding: 5px 0;
+          line-height: 28px;
+          text-align: center;
+          user-select: none;
+        }
+
+        .submitEntryBox:hover {
+          background-color: greenyellow;
+        }
+
+        .submitEntryBox:active {
+          background-color: rgb(37, 224, 84);
         }
 
         .removeDatasetItemBox {
@@ -303,10 +334,15 @@ html, body {
           padding: 5px 0;
           line-height: 28px;
           text-align: center;
+          user-select: none;
         }
 
         .datasetColumnBox {
           font-weight: bold;
+        }
+
+        .datasetColumnInput {
+          height: 28px;
         }
 
         .datasetItemBox {
@@ -338,6 +374,10 @@ html, body {
         .datasetListItemSpan {
           float: left;
           margin: 10px 10px;
+        }
+
+        .datasetListItemDate {
+          width: 200px;
         }
 
         .vlIcon {
