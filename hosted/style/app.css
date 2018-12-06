@@ -100,19 +100,15 @@ html, body {
       #dashboard .selectedDashboardPage #addDataContainer #addDataSubheading {
         color: white;
         margin: 0 0 5px 0; }
-      #dashboard .selectedDashboardPage #addDataContainer #datasetNameLabel {
-        float: left;
-        color: white;
-        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-        font-weight: bold; }
       #dashboard .selectedDashboardPage #addDataContainer #datasetName {
         float: left;
-        margin-left: 15px;
+        margin: 10px 40% 0 40%;
+        width: 20%;
         clear: right; }
       #dashboard .selectedDashboardPage #addDataContainer #csvUploadContainer {
         overflow: hidden;
         position: relative;
-        background-color: #71e0e0;
+        background-color: #cc4a9a;
         border: 5px dashed #0094c5;
         float: left;
         text-align: center;
@@ -147,7 +143,8 @@ html, body {
         text-align: right;
         top: 0; }
       #dashboard .selectedDashboardPage #addDataContainer #csvButton {
-        margin: 10px;
+        margin: 10px 40%;
+        width: 20%;
         float: left;
         clear: both; }
       #dashboard .selectedDashboardPage #addDataContainer #statusBoxContainer {
@@ -183,78 +180,224 @@ html, body {
           padding-top: 20%;
           text-align: center;
           color: white; }
-      #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer #datasetViewHeader {
-        min-width: calc(100% - 20px);
-        height: 25px;
-        background-color: pink;
-        overflow: hidden;
-        line-height: 25px;
-        padding: 10px; }
-        #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer #datasetViewHeader #datasetViewName {
-          color: white;
-          margin: 0;
-          width: 30%;
-          white-space: nowrap;
+      #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer {
+        position: relative; }
+        #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer #menuContainer {
+          width: 100%;
+          height: 100%;
+          overflow: hidden; }
+          #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer #menuContainer #menu {
+            width: 90%;
+            height: 90%;
+            margin: 2.5% auto;
+            background-color: #cc4a9a;
+            border-radius: 20px; }
+            #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer #menuContainer #menu #exitMenuButton {
+              float: right;
+              width: 20px;
+              height: 20px;
+              margin: 10px;
+              border-radius: 2px; }
+            #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer #menuContainer #menu #datasetSearchTitle {
+              text-align: center;
+              margin: 10px 0 0 0;
+              width: 100%;
+              float: left;
+              color: white; }
+            #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer #menuContainer #menu #addConditionContainer {
+              width: 100%;
+              float: left; }
+              #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer #menuContainer #menu #addConditionContainer #conditionLabelContainer {
+                float: left;
+                width: calc(100% - 30px);
+                margin: 0 10px;
+                clear: both;
+                background-color: #d16d9f;
+                border-radius: 5px;
+                border: 3px solid lightblue; }
+                #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer #menuContainer #menu #addConditionContainer #conditionLabelContainer .conditionLabel {
+                  float: left;
+                  text-align: left;
+                  line-height: 30px;
+                  width: calc(25% - 5px);
+                  margin-left: 5px;
+                  clear: none;
+                  overflow: hidden;
+                  text-overflow: clip;
+                  font-weight: bold; }
+              #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer #menuContainer #menu #addConditionContainer #conditionInputContainer {
+                float: left;
+                width: calc(100% - 30px);
+                margin: 10px;
+                clear: both;
+                background-color: #d16d9f;
+                border-radius: 5px;
+                padding: 5px 0;
+                border: 3px solid lightblue; }
+                #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer #menuContainer #menu #addConditionContainer #conditionInputContainer .conditionInput {
+                  float: left;
+                  width: calc(25% - 5px);
+                  margin-left: 5px;
+                  height: 20px;
+                  clear: none; }
+                #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer #menuContainer #menu #addConditionContainer #conditionInputContainer #addConditionButton {
+                  float: left;
+                  margin-left: 5px;
+                  height: 20px;
+                  width: calc(10% - 5px);
+                  min-width: 50px;
+                  clear: none; }
+            #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer #menuContainer #menu #datasetConditionsTitle {
+              text-align: center;
+              margin: 0;
+              width: 100%;
+              float: left;
+              color: white; }
+            #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer #menuContainer #menu #conditionsList {
+              float: left;
+              width: calc(100% - 30px);
+              margin: 10px;
+              clear: both;
+              background-color: #d16d9f;
+              border-radius: 5px;
+              padding: 0;
+              max-height: 130px;
+              border: 3px solid lightblue;
+              overflow-y: scroll; }
+              #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer #menuContainer #menu #conditionsList #conditionsListLabelContainer {
+                float: left;
+                width: 100%;
+                clear: both;
+                border-bottom: 3px solid lightblue; }
+                #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer #menuContainer #menu #conditionsList #conditionsListLabelContainer .conditionsLabel {
+                  float: left;
+                  width: calc(25% - 8px);
+                  margin-left: 5px;
+                  height: 20px;
+                  clear: none;
+                  border-right: 3px solid lightblue;
+                  font-weight: bold;
+                  overflow: hidden;
+                  text-overflow: clip; }
+              #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer #menuContainer #menu #conditionsList #conditionsListItemContainer {
+                float: left;
+                width: 100%;
+                clear: both;
+                border-bottom: 3px solid lightblue; }
+                #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer #menuContainer #menu #conditionsList #conditionsListItemContainer .conditionsListEntry {
+                  float: left;
+                  width: calc(25% - 8px);
+                  margin-left: 5px;
+                  height: 20px;
+                  clear: none;
+                  border-right: 3px solid lightblue;
+                  overflow: hidden;
+                  text-overflow: clip; }
+                #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer #menuContainer #menu #conditionsList #conditionsListItemContainer .conditionsListRemoveButton {
+                  float: left;
+                  width: calc(25% - 15px);
+                  margin-left: 5px;
+                  height: 20px;
+                  clear: none;
+                  overflow: hidden;
+                  text-overflow: clip;
+                  background-color: red;
+                  text-align: center;
+                  border-radius: 5px;
+                  font-weight: bold; }
+            #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer #menuContainer #menu #conditionsList::-webkit-scrollbar-track {
+              -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+              background-color: black; }
+            #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer #menuContainer #menu #conditionsList::-webkit-scrollbar {
+              width: 6px;
+              background-color: black; }
+            #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer #menuContainer #menu #conditionsList::-webkit-scrollbar-thumb {
+              background-color: lightblue; }
+            #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer #menuContainer #menu #searchEntriesButton {
+              float: left;
+              width: 35%;
+              margin: 0 32.5%; }
+        #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer #datasetViewHeader {
+          min-width: calc(100% - 20px);
+          height: 25px;
+          background-color: pink;
           overflow: hidden;
-          text-overflow: ellipsis;
-          float: left; }
-        #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer #datasetViewHeader #datasetViewButton {
-          float: left;
-          margin-left: 5px; }
-      #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer .datasetViewListItem {
-        min-width: 100%;
-        height: 35px;
-        background-color: pink;
-        line-height: 15px;
-        white-space: nowrap; }
-      #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer .datasetNumBox {
-        width: 30px;
-        height: 28px;
-        border: 1px solid black;
-        background-color: pink;
-        display: inline-block;
-        overflow: hidden;
-        padding: 5px 0;
-        line-height: 28px;
-        text-align: center; }
-      #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer .submitEntryBox {
-        width: 30px;
-        height: 28px;
-        border: 1px solid black;
-        background-color: #c0ffc0;
-        display: inline-block;
-        overflow: hidden;
-        padding: 5px 0;
-        line-height: 28px;
-        text-align: center;
-        user-select: none; }
-      #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer .submitEntryBox:hover {
-        background-color: greenyellow; }
-      #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer .submitEntryBox:active {
-        background-color: #25e054; }
-      #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer .removeDatasetItemBox {
-        width: 30px;
-        height: 28px;
-        border: 1px solid black;
-        background-color: red;
-        display: inline-block;
-        overflow: hidden;
-        padding: 5px 0;
-        line-height: 28px;
-        text-align: center;
-        user-select: none; }
-      #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer .datasetColumnBox {
-        font-weight: bold; }
-      #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer .datasetColumnInput {
-        height: 28px; }
-      #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer .datasetItemBox {
-        width: 30%;
-        height: 28px;
-        border: 1px solid black;
-        display: inline-block;
-        overflow: hidden;
-        line-height: 25px;
-        padding: 5px; }
+          line-height: 25px;
+          padding: 10px; }
+          #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer #datasetViewHeader #datasetViewName {
+            color: white;
+            margin: 0;
+            width: 30%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            float: left; }
+          #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer #datasetViewHeader #datasetViewButton {
+            float: left;
+            margin-left: 5px; }
+        #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer .datasetViewListItem {
+          min-width: 100%;
+          height: 35px;
+          background-color: pink;
+          line-height: 15px;
+          white-space: nowrap; }
+        #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer .datasetNumBox {
+          width: 30px;
+          height: 28px;
+          border: 1px solid black;
+          background-color: pink;
+          display: inline-block;
+          overflow: hidden;
+          padding: 5px 0;
+          line-height: 28px;
+          text-align: center; }
+        #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer .submitEntryBox {
+          width: 30px;
+          height: 28px;
+          border: 1px solid black;
+          background-color: #c0ffc0;
+          display: inline-block;
+          overflow: hidden;
+          padding: 5px 0;
+          line-height: 28px;
+          text-align: center;
+          user-select: none; }
+        #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer .submitEntryBox:hover {
+          background-color: greenyellow; }
+        #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer .submitEntryBox:active {
+          background-color: #25e054; }
+        #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer .removeDatasetItemBox {
+          width: 30px;
+          height: 28px;
+          border: 1px solid black;
+          background-color: red;
+          display: inline-block;
+          overflow: hidden;
+          padding: 5px 0;
+          line-height: 28px;
+          text-align: center;
+          user-select: none; }
+        #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer .entryIndexBox {
+          width: 30px;
+          height: 28px;
+          border: 1px solid black;
+          display: inline-block;
+          overflow: hidden;
+          padding: 5px 0;
+          line-height: 28px;
+          text-align: center; }
+        #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer .datasetColumnBox {
+          font-weight: bold; }
+        #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer .datasetColumnInput {
+          height: 28px; }
+        #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer .datasetItemBox {
+          width: 30%;
+          height: 28px;
+          border: 1px solid black;
+          display: inline-block;
+          overflow: hidden;
+          line-height: 25px;
+          padding: 5px; }
       #dashboard .selectedDashboardPage #datasetListContainer .datasetListItem {
         width: 100%;
         height: 35px;
@@ -271,7 +414,11 @@ html, body {
           float: left;
           margin: 10px 10px; }
         #dashboard .selectedDashboardPage #datasetListContainer .datasetListItem .datasetListItemDate {
-          width: 200px; }
+          width: 200px;
+          max-width: 30%;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis; }
         #dashboard .selectedDashboardPage #datasetListContainer .datasetListItem .vlIcon {
           width: 15px;
           height: 15px; }
