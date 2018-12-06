@@ -564,18 +564,16 @@ var SearchedDataset = function (_React$Component6) {
     key: "searchEntries",
     value: function searchEntries() {
       var conditions = this.state.conditions;
+      var foundEntries = this.state.entries.slice(0);
 
       if (conditions.length === 0) {
         this.setState({
-          searchEntries: this.state.entries,
+          searchedEntries: foundEntries,
           adding: false,
           menu: false
         });
         return;
       }
-
-      // let allEntries = this.state.entries;
-      var foundEntries = this.state.entries;
 
       for (var i = 0; i < conditions.length; i++) {
         var condition = conditions[i];
@@ -612,7 +610,8 @@ var SearchedDataset = function (_React$Component6) {
 
       this.setState({
         adding: false,
-        menu: false
+        menu: false,
+        searchedEntries: foundEntries
       });
     }
   }, {

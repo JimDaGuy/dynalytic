@@ -87,16 +87,22 @@ html, body {
       background-color: pink; }
       #dashboard .selectedDashboardPage #welcomeContainer #welcomeSubheading {
         color: white;
-        margin: 0; }
+        margin: 0;
+        text-align: center; }
       #dashboard .selectedDashboardPage #welcomeContainer #welcomeDesc {
-        color: white; }
+        font-size: 1.2em;
+        color: white;
+        width: 100%;
+        text-align: center;
+        display: block; }
     #dashboard .selectedDashboardPage #addDataContainer {
       width: calc(90% - 30px);
       margin: 0 auto;
       height: calc(80% - 30px);
       padding: 15px;
       background-color: pink;
-      border-radius: 5px; }
+      border-radius: 5px;
+      overflow-y: scroll; }
       #dashboard .selectedDashboardPage #addDataContainer #addDataSubheading {
         color: white;
         margin: 0 0 5px 0; }
@@ -161,6 +167,14 @@ html, body {
           background-color: lightgreen; }
         #dashboard .selectedDashboardPage #addDataContainer #statusBoxContainer .errorAdd {
           background-color: red; }
+    #dashboard .selectedDashboardPage #addDataContainer::-webkit-scrollbar-track {
+      -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+      background-color: black; }
+    #dashboard .selectedDashboardPage #addDataContainer::-webkit-scrollbar {
+      width: 6px;
+      background-color: black; }
+    #dashboard .selectedDashboardPage #addDataContainer::-webkit-scrollbar-thumb {
+      background-color: lightblue; }
     #dashboard .selectedDashboardPage #datasetListContainer {
       width: 90%;
       margin: 0 auto;
@@ -183,7 +197,7 @@ html, body {
       #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer {
         position: relative; }
         #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer #menuContainer {
-          width: 100%;
+          width: calc(100%);
           height: 100%;
           overflow: hidden; }
           #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer #menuContainer #menu {
@@ -191,7 +205,7 @@ html, body {
             height: 90%;
             margin: 2.5% auto;
             background-color: #cc4a9a;
-            border-radius: 20px; }
+            overflow-y: scroll; }
             #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer #menuContainer #menu #exitMenuButton {
               float: right;
               width: 20px;
@@ -316,7 +330,15 @@ html, body {
             #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer #menuContainer #menu #searchEntriesButton {
               float: left;
               width: 35%;
-              margin: 0 32.5%; }
+              margin: 0 32.5% 10px 32.5%; }
+          #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer #menuContainer #menu::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+            background-color: #0e0a0a; }
+          #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer #menuContainer #menu::-webkit-scrollbar {
+            width: 6px;
+            background-color: #0e0a0a; }
+          #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer #menuContainer #menu::-webkit-scrollbar-thumb {
+            background-color: lightblue; }
         #dashboard .selectedDashboardPage #datasetListContainer #datasetViewContainer #datasetViewHeader {
           min-width: calc(100% - 20px);
           height: 25px;
@@ -435,7 +457,7 @@ html, body {
       width: 6px;
       background-color: #0e0a0a; }
     #dashboard .selectedDashboardPage #datasetListContainer::-webkit-scrollbar-thumb {
-      background-color: #d16d9f; }
+      background-color: lightblue; }
     #dashboard .selectedDashboardPage #analyticsContainer {
       width: calc(90% - 30px);
       margin: 0 auto;

@@ -343,18 +343,16 @@ class SearchedDataset extends React.Component {
 
   searchEntries() {
     let conditions = this.state.conditions;
+    let foundEntries = this.state.entries.slice(0);
 
     if (conditions.length === 0) {
       this.setState({
-        searchEntries: this.state.entries,
+        searchedEntries: foundEntries,
         adding: false,
         menu: false,
       });
       return;
     }
-
-    // let allEntries = this.state.entries;
-    let foundEntries = this.state.entries;
 
     for (let i = 0; i < conditions.length; i++) {
       let condition = conditions[i];
@@ -392,6 +390,7 @@ class SearchedDataset extends React.Component {
     this.setState({
       adding: false,
       menu: false,
+      searchedEntries: foundEntries,
     });
   }
 
