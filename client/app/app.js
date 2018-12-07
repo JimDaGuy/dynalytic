@@ -215,6 +215,9 @@ class AddCondition extends React.Component {
     });
   }
 
+  // submitCondition:
+  // - Send new condition up to the parent's state
+  // //////////////////////////////
   submitCondition() {
     let col = this.state.selectedColumn;
     let type = this.state.selectedType;
@@ -285,6 +288,9 @@ class SearchedDataset extends React.Component {
     this.getDatasetInfo();
   }
 
+  // addCondition:
+  // - Add condition to condition state
+  // //////////////////////////////
   addCondition(col, type, value) {
     let condition = {
       col,
@@ -341,6 +347,9 @@ class SearchedDataset extends React.Component {
     });
   }
 
+  // searchEntries:
+  // - Search dataset for entries matching the current conditions
+  // //////////////////////////////
   searchEntries() {
     let conditions = this.state.conditions;
     let foundEntries = this.state.entries.slice(0);
@@ -354,12 +363,14 @@ class SearchedDataset extends React.Component {
       return;
     }
 
+    // Iterate through each condition
     for (let i = 0; i < conditions.length; i++) {
       let condition = conditions[i];
       let col = condition.col;
       let type = condition.type;
       let value = condition.value;
 
+      // Remove entries that don't match the current condition
       if (type === 'equals') {
         for (let j = 0; j < foundEntries.length; j++) {
           if (foundEntries[j][col] === null) {
@@ -398,6 +409,9 @@ class SearchedDataset extends React.Component {
     e.stopPropagation();
   }
 
+  // removeCondition:
+  // - Remove condition at the current index from the conditions state
+  // //////////////////////////////
   removeCondition(index) {
     let newConditions = this.state.conditions;
     newConditions.splice(index, 1);
@@ -492,6 +506,9 @@ class ViewedDataset extends React.Component {
     this.getDatasetInfo();
   }
 
+  // editDataset:
+  // - Submit the edited dataset to the server
+  // //////////////////////////////
   editDataset(csrf) {
     $.ajax({
       type: "POST",
@@ -509,6 +526,9 @@ class ViewedDataset extends React.Component {
     });
   }
 
+  // removeEntry:
+  // - Remove the entry at the given index from the entries state
+  // //////////////////////////////
   removeEntry(index) {
     let newEntries = this.state.entries;
     newEntries.splice(index, 1);
@@ -517,6 +537,9 @@ class ViewedDataset extends React.Component {
     });
   }
 
+  // updateCurrentEntry:
+  // - Change the passed in column's property of the currentEntry state
+  // //////////////////////////////
   updateCurrentEntry(e, column) {
     let currentEntry = this.state.currentEntry;
     if (e.target.value === '')
@@ -528,6 +551,9 @@ class ViewedDataset extends React.Component {
     });
   }
 
+  // submitCurrentEntry:
+  // - Send new entry list to the server to update the dataset, update dataset view on success
+  // //////////////////////////////
   submitCurrentEntry(csrf) {
     // If all entries are empty, ignore the submission
     if (Object.keys(this.state.currentEntry).length === 0) {
@@ -813,28 +839,6 @@ class DatasetList extends React.Component {
   }
 }
 
-class Analytics extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-
-    };
-  }
-
-  render() {
-    return (
-      <div id="analyticsContainer">
-        <h2 id="analyticsSubheading">No analytics to display</h2>
-        <span id="analyticsDesc">
-          Analytics will be coming as a premium feature
-          in future releases of dynalytic.
-        </span>
-      </div>
-    );
-  }
-}
-
 class Content extends React.Component {
   constructor(props) {
     super(props);
@@ -896,13 +900,6 @@ class Content extends React.Component {
           <div id="myDataPage" className="selectedDashboardPage" >
             <h1>Here's your data</h1>
             <DatasetList csrf={csrf} getUserDatasets={this.getUserDatasets} userDatasets={this.state.userDatasets} />
-          </div>;
-        break;
-      case "analytics":
-        page =
-          <div id="analyticsPage" className="selectedDashboardPage" >
-            <h1>Analytics here!</h1>
-            <Analytics />
           </div>;
         break;
       default:

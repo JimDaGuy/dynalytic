@@ -350,6 +350,11 @@ var AddCondition = function (_React$Component5) {
         selectedValue: e.target.value
       });
     }
+
+    // submitCondition:
+    // - Send new condition up to the parent's state
+    // //////////////////////////////
+
   }, {
     key: "submitCondition",
     value: function submitCondition() {
@@ -476,6 +481,11 @@ var SearchedDataset = function (_React$Component6) {
     value: function componentDidMount() {
       this.getDatasetInfo();
     }
+
+    // addCondition:
+    // - Add condition to condition state
+    // //////////////////////////////
+
   }, {
     key: "addCondition",
     value: function addCondition(col, type, value) {
@@ -560,6 +570,11 @@ var SearchedDataset = function (_React$Component6) {
 
       return getDatasetInfo;
     }()
+
+    // searchEntries:
+    // - Search dataset for entries matching the current conditions
+    // //////////////////////////////
+
   }, {
     key: "searchEntries",
     value: function searchEntries() {
@@ -575,12 +590,14 @@ var SearchedDataset = function (_React$Component6) {
         return;
       }
 
+      // Iterate through each condition
       for (var i = 0; i < conditions.length; i++) {
         var condition = conditions[i];
         var col = condition.col;
         var type = condition.type;
         var value = condition.value;
 
+        // Remove entries that don't match the current condition
         if (type === 'equals') {
           for (var j = 0; j < foundEntries.length; j++) {
             if (foundEntries[j][col] === null) {
@@ -619,6 +636,11 @@ var SearchedDataset = function (_React$Component6) {
     value: function stopPropagation(e) {
       e.stopPropagation();
     }
+
+    // removeCondition:
+    // - Remove condition at the current index from the conditions state
+    // //////////////////////////////
+
   }, {
     key: "removeCondition",
     value: function removeCondition(index) {
@@ -777,6 +799,11 @@ var ViewedDataset = function (_React$Component7) {
     value: function componentDidMount() {
       this.getDatasetInfo();
     }
+
+    // editDataset:
+    // - Submit the edited dataset to the server
+    // //////////////////////////////
+
   }, {
     key: "editDataset",
     value: function editDataset(csrf) {
@@ -795,6 +822,11 @@ var ViewedDataset = function (_React$Component7) {
         }
       }).error(function (err) {});
     }
+
+    // removeEntry:
+    // - Remove the entry at the given index from the entries state
+    // //////////////////////////////
+
   }, {
     key: "removeEntry",
     value: function removeEntry(index) {
@@ -804,6 +836,11 @@ var ViewedDataset = function (_React$Component7) {
         entries: newEntries
       });
     }
+
+    // updateCurrentEntry:
+    // - Change the passed in column's property of the currentEntry state
+    // //////////////////////////////
+
   }, {
     key: "updateCurrentEntry",
     value: function updateCurrentEntry(e, column) {
@@ -813,6 +850,11 @@ var ViewedDataset = function (_React$Component7) {
         currentEntry: currentEntry
       });
     }
+
+    // submitCurrentEntry:
+    // - Send new entry list to the server to update the dataset, update dataset view on success
+    // //////////////////////////////
+
   }, {
     key: "submitCurrentEntry",
     value: function submitCurrentEntry(csrf) {
@@ -1283,57 +1325,22 @@ var DatasetList = function (_React$Component8) {
   return DatasetList;
 }(React.Component);
 
-var Analytics = function (_React$Component9) {
-  _inherits(Analytics, _React$Component9);
-
-  function Analytics(props) {
-    _classCallCheck(this, Analytics);
-
-    var _this18 = _possibleConstructorReturn(this, (Analytics.__proto__ || Object.getPrototypeOf(Analytics)).call(this, props));
-
-    _this18.state = {};
-    return _this18;
-  }
-
-  _createClass(Analytics, [{
-    key: "render",
-    value: function render() {
-      return React.createElement(
-        "div",
-        { id: "analyticsContainer" },
-        React.createElement(
-          "h2",
-          { id: "analyticsSubheading" },
-          "No analytics to display"
-        ),
-        React.createElement(
-          "span",
-          { id: "analyticsDesc" },
-          "Analytics will be coming as a premium feature in future releases of dynalytic."
-        )
-      );
-    }
-  }]);
-
-  return Analytics;
-}(React.Component);
-
-var Content = function (_React$Component10) {
-  _inherits(Content, _React$Component10);
+var Content = function (_React$Component9) {
+  _inherits(Content, _React$Component9);
 
   function Content(props) {
     _classCallCheck(this, Content);
 
-    var _this19 = _possibleConstructorReturn(this, (Content.__proto__ || Object.getPrototypeOf(Content)).call(this, props));
+    var _this18 = _possibleConstructorReturn(this, (Content.__proto__ || Object.getPrototypeOf(Content)).call(this, props));
 
-    _this19.state = {
+    _this18.state = {
       selectedPage: "home",
       userDatasets: []
     };
 
-    _this19.selectPage = _this19.selectPage.bind(_this19);
-    _this19.getUserDatasets = _this19.getUserDatasets.bind(_this19);
-    return _this19;
+    _this18.selectPage = _this18.selectPage.bind(_this18);
+    _this18.getUserDatasets = _this18.getUserDatasets.bind(_this18);
+    return _this18;
   }
 
   _createClass(Content, [{
@@ -1353,7 +1360,7 @@ var Content = function (_React$Component10) {
     key: "getUserDatasets",
     value: function () {
       var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
-        var _this20 = this;
+        var _this19 = this;
 
         return regeneratorRuntime.wrap(function _callee5$(_context5) {
           while (1) {
@@ -1365,7 +1372,7 @@ var Content = function (_React$Component10) {
                   url: '/getDatasetList',
                   success: function success(response) {
                     response = JSON.parse(response);
-                    _this20.setState({ userDatasets: response.datasets });
+                    _this19.setState({ userDatasets: response.datasets });
                   },
                   error: function error(err) {
                     console.dir(err);
@@ -1389,7 +1396,7 @@ var Content = function (_React$Component10) {
   }, {
     key: "render",
     value: function render() {
-      var _this21 = this;
+      var _this20 = this;
 
       var csrf = this.props.csrf;
       var page = void 0;
@@ -1431,18 +1438,6 @@ var Content = function (_React$Component10) {
             React.createElement(DatasetList, { csrf: csrf, getUserDatasets: this.getUserDatasets, userDatasets: this.state.userDatasets })
           );
           break;
-        case "analytics":
-          page = React.createElement(
-            "div",
-            { id: "analyticsPage", className: "selectedDashboardPage" },
-            React.createElement(
-              "h1",
-              null,
-              "Analytics here!"
-            ),
-            React.createElement(Analytics, null)
-          );
-          break;
         default:
           break;
       }
@@ -1461,7 +1456,7 @@ var Content = function (_React$Component10) {
               {
                 className: "sidebarItem " + (this.state.selectedPage === 'home' ? 'selectedSidebarItem' : ''),
                 onClick: function onClick() {
-                  return _this21.selectPage('home');
+                  return _this20.selectPage('home');
                 }
               },
               React.createElement(
@@ -1475,7 +1470,7 @@ var Content = function (_React$Component10) {
               {
                 className: "sidebarItem " + (this.state.selectedPage === 'addData' ? 'selectedSidebarItem' : ''),
                 onClick: function onClick() {
-                  return _this21.selectPage('addData');
+                  return _this20.selectPage('addData');
                 }
               },
               React.createElement(
@@ -1489,7 +1484,7 @@ var Content = function (_React$Component10) {
               {
                 className: "sidebarItem " + (this.state.selectedPage === 'myData' ? 'selectedSidebarItem' : ''),
                 onClick: function onClick() {
-                  return _this21.selectPage('myData');
+                  return _this20.selectPage('myData');
                 }
               },
               React.createElement(
@@ -1512,17 +1507,17 @@ var Content = function (_React$Component10) {
   return Content;
 }(React.Component);
 
-var Page = function (_React$Component11) {
-  _inherits(Page, _React$Component11);
+var Page = function (_React$Component10) {
+  _inherits(Page, _React$Component10);
 
   function Page(props) {
     _classCallCheck(this, Page);
 
-    var _this22 = _possibleConstructorReturn(this, (Page.__proto__ || Object.getPrototypeOf(Page)).call(this, props));
+    var _this21 = _possibleConstructorReturn(this, (Page.__proto__ || Object.getPrototypeOf(Page)).call(this, props));
 
-    _this22.state = {};
+    _this21.state = {};
 
-    return _this22;
+    return _this21;
   }
 
   _createClass(Page, [{
